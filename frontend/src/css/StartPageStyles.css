@@ -1,0 +1,146 @@
+.start-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://phonoteka.org/uploads/posts/2022-02/1643989328_35-phonoteka-org-p-fon-dlya-prezentatsii-delovoi-temnii-35.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.header-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  animation: fadeIn 2s ease-out;
+  z-index: 2;
+}
+
+.header-text p {
+  font-size: 26px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.header-text {
+  text-align: center;
+}
+
+.app-title {
+  font-size: 64px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.header-button {
+  font-size: 16px;
+  height: 50px;
+  padding: 0px 60px;
+  background-color: #ffffff;
+  color: #413f3f;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  width: fit-content;
+}
+
+.header-button:hover {
+  background-color: #d9d9d9;
+}
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app-title {
+  font-size: 64px;
+  color: #ffffff;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.start-h1 {
+  font-size: 48px;
+  margin-bottom: 16px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: fadeIn 2s ease-out;
+  color: #5d5a5a;
+}
+
+.start-p {
+  font-size: 32px;
+  margin-bottom: 24px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  color: #5d5a5a;
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: fadeIn 2s ease-out;
+}
+
+.icon {
+  margin-right: 8px;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: white;
+}
+
+.footer-button {
+  margin-top: auto;
+}
+
+.footer-button {
+  font-size: 16px;
+  height: 50px;
+  padding: 0px 60px;
+  background-color: #3d3a3a;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  width: fit-content;
+}
+
+.footer-button:hover {
+  background-color: #d9d9d9;
+}
+
+
