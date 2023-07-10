@@ -8,7 +8,7 @@ import {
     SearchOutlined,
     StarOutlined
 } from '@ant-design/icons';
-import '../css/StartPageStyles.css';
+import '../css/startPageStyles.css';
 import {Link} from "react-router-dom";
 
 const StartPage = () => {
@@ -66,7 +66,7 @@ const StartPage = () => {
                         классифицировать и организовывать их, обеспечивая более эффективную работу.
                     </p>
                 </div>
-                <Link to="/api">
+                <Link to="/api/auth">
                     <Button className="footer-button" type="primary">
                         <CheckOutlined className="icon"/>
                         Попробовать

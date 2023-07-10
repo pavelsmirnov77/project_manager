@@ -1,11 +1,10 @@
 package ru.sber.backend.entities;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
@@ -25,15 +24,19 @@ public class Task {
     @Size(max = 255)
     private String description;
 
-    @Column(nullable = false)
-    private LocalDate deadline;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "task_priorities",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "priority_id"))
-    private Set<Role> priorities = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private Status status;
+
+    @Column
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime deadline;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERegularity regularity;
 }

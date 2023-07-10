@@ -9,7 +9,7 @@ const AuthForm = () => {
     const onFinish = (values) => {
         console.log("Авторизация прошла успешно!");
         message.success("Вы успешно вошли");
-        navigate("/todo")
+        navigate("/todo/note")
     };
 
     return (
@@ -19,7 +19,15 @@ const AuthForm = () => {
                     <Form.Item
                         name="email"
                         label="Email"
-                        rules={[{required: true, message: 'Введите email'}]}
+                        rules={[{
+                            required: true,
+                            message: 'Введите email'
+                        },
+                            {
+                                type: 'email',
+                                message: 'Некорректный email'
+                            },
+                        ]}
                     >
                         <Input prefix={<UserOutlined/>} placeholder="Email"/>
                     </Form.Item>

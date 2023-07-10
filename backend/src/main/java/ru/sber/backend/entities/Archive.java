@@ -1,19 +1,21 @@
 package ru.sber.backend.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "priorities")
-@Data
+@Table(name = "archive")
 @NoArgsConstructor
-public class Priority {
+@AllArgsConstructor
+@Data
+public class Archive {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private EPriority name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_id", nullable = false)
+    private Task task;
 }

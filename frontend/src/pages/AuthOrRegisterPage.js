@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button} from 'antd';
 import {UserOutlined} from '@ant-design/icons';
-import '../css/AuthOrRegisterPageStyles.css';
+import '../css/authOrRegisterPageStyles.css';
 import {Link} from "react-router-dom";
 
 const AuthOrRegisterPage = () => {

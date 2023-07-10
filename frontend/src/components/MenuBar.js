@@ -6,7 +6,9 @@ import {
     UserOutlined,
     FileOutlined,
     DeleteOutlined,
+    NotificationOutlined, BulbOutlined,
 } from '@ant-design/icons';
+import {Link} from "react-router-dom";
 
 const {Header, Content, Sider} = Layout;
 
@@ -69,11 +71,25 @@ const MenuBar = () => {
                     }}
                 >
                     <Menu style={{background: '#333232',}} theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                        <Menu.Item key="1" icon={<FileOutlined/>}>
-                            Архив
+                        <Menu.Item key="1" icon={<BulbOutlined/>}>
+                            <Link to="/todo/note">
+                                Заметки
+                            </Link>
                         </Menu.Item>
-                        <Menu.Item key="2" icon={<DeleteOutlined/>}>
-                            Корзина
+                        <Menu.Item key="2"  icon={<NotificationOutlined/>}>
+                            <Link to="/todo/reminder">
+                                Напоминания
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="3" icon={<FileOutlined/>}>
+                            <Link to="/todo/archive">
+                                Архив
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="4" icon={<DeleteOutlined/>}>
+                            <Link to="/todo/trash">
+                                Корзина
+                            </Link>
                         </Menu.Item>
                     </Menu>
                 </Sider>
