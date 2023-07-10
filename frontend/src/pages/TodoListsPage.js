@@ -9,11 +9,12 @@ import {
 import ruRU from "antd/es/date-picker/locale/ru_RU";
 import moment from "moment";
 import "moment/locale/ru";
+import CategoryCard from "../components/CategoryCard";
 
 moment.locale("ru");
 
 const inputVariants = {
-    open: {width: "300px", opacity: 1, display: "flex"},
+    open: {width: "600px", opacity: 1, display: "flex"},
     closed: {width: "0", opacity: 0, display: "none"},
 };
 
@@ -21,6 +22,7 @@ export const TodoListsPage = () => {
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const [showCategoryInput, setShowCategoryInput] = useState(false);
     const [categoryName, setCategoryName] = useState("");
+    const [categories, setCategories] = useState([]);
 
     const handleDatePickerOpenChange = (open) => {
         setIsDatePickerOpen(open);
@@ -41,10 +43,26 @@ export const TodoListsPage = () => {
 
     const handleAddCategory = () => {
         if (categoryName.trim() !== "") {
-            console.log("Название категории:", categoryName);
+            const newCategory = {title: categoryName, id: categories.length + 1};
+            setCategories([...categories, newCategory]);
             setCategoryName("");
             setShowCategoryInput(false);
         }
+    };
+
+    const handleEditCategory = (categoryId, newTitle) => {
+        const updatedCategories = categories.map((category) => {
+            if (category.id === categoryId) {
+                return {...category, title: newTitle};
+            }
+            return category;
+        });
+        setCategories(updatedCategories);
+    };
+
+    const handleAddTask = (categoryId) => {
+        // Действия для добавления задачи в категорию
+        console.log("Добавление задачи в категорию:", categoryId);
     };
 
     return (
@@ -78,7 +96,7 @@ export const TodoListsPage = () => {
                             style={{
                                 alignItems: "center",
                                 marginBottom: "16px",
-                                width: "300px",
+                                width: "600px",
                             }}
                         >
                             <Input
@@ -90,25 +108,47 @@ export const TodoListsPage = () => {
                             <Button
                                 type="primary"
                                 icon={<PlusOutlined/>}
-                                style={{flex: 0, paddingRight: '6px', paddingLeft: '6px', backgroundColor: '#333232'}}
+                                style={{
+                                    flex: 0,
+                                    paddingRight: "6px",
+                                    paddingLeft: "6px",
+                                    backgroundColor: "#333232",
+                                }}
                                 onClick={handleAddCategory}
                             />
                             <Button
-                                style={{marginLeft: "8px", flex: 0, paddingRight: '6px', paddingLeft: '6px'}}
+                                style={{
+                                    marginLeft: "8px",
+                                    flex: 0,
+                                    paddingRight: "6px",
+                                    paddingLeft: "6px"
+                                }}
                                 icon={<CloseOutlined/>}
                                 onClick={handleCategoryInputClose}
                             />
                         </motion.div>
                     )}
                 </AnimatePresence>
-                {!showCategoryInput && (
-                    <Button
-                        type="dashed"
-                        icon={<PlusOutlined/>}
-                        onClick={handleCategoryInputToggle}
-                        style={{display: showCategoryInput ? "none" : "inline-block"}}
-                    />
-                )}
+                <div style={{textAlign: "center"}}>
+                    {!showCategoryInput && (
+                        <Button
+                            type="dashed"
+                            icon={<PlusOutlined/>}
+                            onClick={handleCategoryInputToggle}
+                            style={{display: showCategoryInput ? "none" : "inline-block"}}
+                        />
+                    )}
+                </div>
+                <div style={{marginTop: "30px"}}>
+                    {categories.map((category) => (
+                        <CategoryCard
+                            key={category.id}
+                            category={category}
+                            handleEditCategory={handleEditCategory}
+                            handleAddTask={handleAddTask}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );

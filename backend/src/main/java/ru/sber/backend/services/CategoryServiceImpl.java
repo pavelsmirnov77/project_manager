@@ -1,4 +1,4 @@
-package ru.sber.backend.security.services;
+package ru.sber.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +34,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Task> getTasksByCategoryId(Long categoryId) {
         return categoryRepository.findTasksByCategoryId(categoryId);
+    }
+
+    @Override
+    public boolean updateCategory(Category category) {
+        categoryRepository.save(category);
+        return true;
     }
 
     @Override

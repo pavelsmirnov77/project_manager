@@ -1,7 +1,6 @@
 package ru.sber.backend.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -20,13 +19,13 @@ public class Task {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    @Size(max = 255)
-    private String description;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "prioriry_id", nullable = false)
+    private Priority priority;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
@@ -39,4 +38,8 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private ERegularity regularity;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

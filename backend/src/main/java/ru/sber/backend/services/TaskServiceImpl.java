@@ -1,4 +1,4 @@
-package ru.sber.backend.security.services;
+package ru.sber.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

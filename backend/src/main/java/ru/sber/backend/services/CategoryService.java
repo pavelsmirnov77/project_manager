@@ -1,4 +1,4 @@
-package ru.sber.backend.security.services;
+package ru.sber.backend.services;
 
 import ru.sber.backend.entities.Category;
 import ru.sber.backend.entities.Task;
@@ -24,6 +24,14 @@ public interface CategoryService {
     Optional<Category> findCategoryById(Long categoryId);
 
     /**
+     * Обновление категории
+     *
+     * @param category обновляемая категория
+     * @return true, если категория успешно обновлена, иначе false
+     */
+    boolean updateCategory(Category category);
+
+    /**
      * Получает все задачи по заданному id категории
      *
      * @param categoryId id категории
@@ -31,5 +39,11 @@ public interface CategoryService {
      */
     List<Task> getTasksByCategoryId(Long categoryId);
 
+    /**
+     * Удаление категории по заданному id
+     *
+     * @param categoryId id категории
+     * @return true, если категория успешно удалена, иначе false
+     */
     boolean deleteCategoryById(Long categoryId);
 }
