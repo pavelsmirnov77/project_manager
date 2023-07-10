@@ -9,7 +9,7 @@ const RegistrationPage = () => {
     const onFinish = (values) => {
         console.log("Регистрация прошла успешно");
         message.success("Вы успешно зарегистрировались");
-        navigate("/api/auth");
+        navigate("/api/auth/signin");
     };
 
     return (

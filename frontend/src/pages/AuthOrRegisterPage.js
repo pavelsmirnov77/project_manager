@@ -13,12 +13,12 @@ const AuthOrRegisterPage = () => {
             </h1>
             <p>Пожалуйста, выберите действие:</p>
             <div className="auth-buttons">
-                <Link to="/api/auth">
+                <Link to="/api/auth/signin">
                     <Button type="primary" size="large" className="auth-button">
                         Вход
                     </Button>
                 </Link>
-                <Link to="/api/register">
+                <Link to="/api/auth/signup">
                     <Button type="default" size="large" className="auth-button">
                         Регистрация
                     </Button>

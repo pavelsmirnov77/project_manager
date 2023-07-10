@@ -23,7 +23,7 @@ const StartPage = () => {
                             TODO-List
                         </h1>
                         <p>Добро пожаловать</p>
-                        <Link to="/api">
+                        <Link to="/api/auth">
                             <Button className="header-button" type="primary">
                                 <CheckOutlined className="icon"/>
                                 Попробовать

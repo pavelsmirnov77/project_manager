@@ -5,15 +5,17 @@ import AuthOrRegisterPage from "./pages/AuthOrRegisterPage";
 import {NotFoundPage} from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import AuthPage from "./pages/AuthPage";
+import {TodoListsPage} from "./pages/TodoListsPage";
 
 const App = () => {
     return (
         <Routes>
             <Route path="/" element={<StartPage/>}/>
-            <Route path="/api" element={<AuthOrRegisterPage/>}/>
+            <Route path="/api/auth" element={<AuthOrRegisterPage/>}/>
             <Route path="*" element={<NotFoundPage/>}/>
-            <Route path="/api/register" element={<RegisterPage/>}/>
-            <Route path="api/auth" element={<AuthPage/>}/>
+            <Route path="/api/auth/signup" element={<RegisterPage/>}/>
+            <Route path="/api/auth/signin" element={<AuthPage/>}/>
+            <Route path="/todo" element={<TodoListsPage/>}/>
         </Routes>
     );
 };

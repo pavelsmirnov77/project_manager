@@ -2,7 +2,6 @@ import {Button, Card, Form, Input, message} from 'antd';
 import {UserOutlined, LockOutlined, LoginOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
 
-
 const AuthForm = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
