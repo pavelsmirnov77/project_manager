@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("todo")
 public class CategoryController {
     private final CategoryService categoryService;

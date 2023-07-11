@@ -3,6 +3,7 @@ package ru.sber.backend.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.sber.backend.entities.ERegularity;
 import ru.sber.backend.entities.Task;
 import ru.sber.backend.services.TaskService;
 
@@ -11,7 +12,6 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("todo")
 public class TaskController {
     private final TaskService taskService;
@@ -46,18 +46,27 @@ public class TaskController {
         return ResponseEntity.ok().body(task);
     }
 
-    @DeleteMapping("/{taskId}")
-    public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
-        log.info("Удаление задачи с id: {}", taskId);
-        boolean isDeleted = taskService.deleteTaskById(taskId);
-        if (isDeleted) {
-            log.info("Задача успешно удалена");
-
-            return ResponseEntity.noContent().build();
+    @PutMapping("/archive/{taskId}")
+    public ResponseEntity<String> addToArchive(@PathVariable("taskId") long taskId) {
+        log.info("Добавление задачи с id: {} в архив", taskId);
+        boolean addedToArchive = taskService.addToArchive(taskId);
+        if (addedToArchive) {
+            return ResponseEntity.ok("Задача добавлена в архив");
         } else {
-            log.info("Задача не была удалена");
-
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/regularity/{taskId}")
+    public ResponseEntity<Task> changeTaskRegularity(@PathVariable Long taskId, @RequestBody ERegularity regularity) {
+        log.info("Изменение регулярности задачи с id: {}", taskId);
+        Task updatedTask = taskService.changeTaskRegularity(taskId, regularity);
+        return ResponseEntity.ok(updatedTask);
+    }
+
+    @DeleteMapping("/trash/{taskId}")
+    public ResponseEntity<?> addToTrash(@PathVariable Long taskId) {
+        taskService.addToTrash(taskId);
+        return ResponseEntity.ok("Задача добавлена в корзину");
     }
 }

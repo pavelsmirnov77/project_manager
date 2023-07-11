@@ -1,6 +1,6 @@
 package ru.sber.backend.services;
 
-import ru.sber.backend.entities.Task;
+import ru.sber.backend.entities.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,10 +39,35 @@ public interface TaskService {
     boolean updateTask(Task task);
 
     /**
-     * Удаляет задачу с заданным id
+     * Помечает задачу как архивированную
      *
      * @param taskId id задачи
-     * @return true, если удалено успешно, иначе false
+     * @return true, если задача занесена в архив, иначе false
      */
-    boolean deleteTaskById(Long taskId);
+    boolean addToArchive(long taskId);
+
+    /**
+     * Изменяет регулярность выполнения задачи
+     *
+     * @param taskId id задачи
+     * @param regularity регулярность выполнения
+     * @return измененная задача
+     */
+    Task changeTaskRegularity(long taskId, ERegularity regularity);
+
+    /**
+     * Изменяет приоритет задачи
+     *
+     * @param taskId id задачи
+     * @param priority приоритет
+     * @return измененная задача
+     */
+    Task changeTaskPriority(long taskId, Priority priority);
+
+    /**
+     * Добавляет задачу в корзину
+     *
+     * @param taskId id добавляемой в корзину задачи
+     */
+    boolean addToTrash(Long taskId);
 }
