@@ -31,13 +31,13 @@ public class Task {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
+    @ManyToOne
+    @JoinColumn(name = "regularity_id", nullable = false)
+    private Regularity regularity;
+
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadline;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private ERegularity regularity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

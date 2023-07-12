@@ -17,6 +17,22 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByTitleContainingIgnoreCase(String titleTask);
 
     /**
+     * Ищет архивные задачи
+     *
+     * @param titleTask имя архивной задачи
+     * @return список архивных задач
+     */
+    List<Task> findAllByTitleAndArchivedTrue(String titleTask);
+
+    /**
+     * Ищет неархивные задачи
+     *
+     * @param titleTask имя неархивной задачи
+     * @return список неархивных задач
+     */
+    List<Task> findAllByTitleAndArchivedFalse(String titleTask);
+
+    /**
      * Удаляет все задачи по заданному id категории
      *
      * @param categoryId id категории

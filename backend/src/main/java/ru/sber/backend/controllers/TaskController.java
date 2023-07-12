@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.backend.entities.ERegularity;
+import ru.sber.backend.entities.Regularity;
 import ru.sber.backend.entities.Task;
 import ru.sber.backend.services.TaskService;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("todo")
 public class TaskController {
     private final TaskService taskService;
@@ -58,7 +60,7 @@ public class TaskController {
     }
 
     @PutMapping("/regularity/{taskId}")
-    public ResponseEntity<Task> changeTaskRegularity(@PathVariable Long taskId, @RequestBody ERegularity regularity) {
+    public ResponseEntity<Task> changeTaskRegularity(@PathVariable Long taskId, @RequestBody Regularity regularity) {
         log.info("Изменение регулярности задачи с id: {}", taskId);
         Task updatedTask = taskService.changeTaskRegularity(taskId, regularity);
         return ResponseEntity.ok(updatedTask);

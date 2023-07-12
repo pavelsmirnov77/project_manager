@@ -24,6 +24,14 @@ public interface CategoryService {
     Optional<Category> findCategoryById(Long categoryId);
 
     /**
+     * Ищет все категории по заданному имени
+     *
+     * @param name название категории
+     * @return список категорий с заданным именем
+     */
+    List<Category> findAllCategoryByName(String name);
+
+    /**
      * Обновление категории
      *
      * @param category обновляемая категория

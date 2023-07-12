@@ -7,6 +7,7 @@ import ru.sber.backend.services.TrashService;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("trash")
 public class TrashController {
     private final TrashService trashService;

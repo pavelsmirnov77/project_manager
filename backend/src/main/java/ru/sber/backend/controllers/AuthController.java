@@ -1,11 +1,14 @@
 package ru.sber.backend.controllers;
 
 import jakarta.validation.Valid;
+import ru.sber.backend.entities.ERole;
+import ru.sber.backend.entities.Role;
 import ru.sber.backend.entities.User;
 import ru.sber.backend.entities.request.LoginRequest;
 import ru.sber.backend.entities.request.SignupRequest;
 import ru.sber.backend.entities.response.JwtResponse;
 import ru.sber.backend.entities.response.MessageResponse;
+import ru.sber.backend.repositories.RoleRepository;
 import ru.sber.backend.repositories.UserRepository;
 import ru.sber.backend.security.jwt.JwtUtils;
 import ru.sber.backend.security.services.UserDetailsImpl;
@@ -18,19 +21,26 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          PasswordEncoder encoder, JwtUtils jwtUtils) {
+                          RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
@@ -48,7 +58,11 @@ public class AuthController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        JwtResponse body = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail());
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        JwtResponse body = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
 
         return ResponseEntity
                 .ok(body);
@@ -68,6 +82,31 @@ public class AuthController {
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
+        Set<String> strRoles = signUpRequest.getRole();
+        Set<Role> roles = new HashSet<>();
+
+        if (strRoles == null) {
+            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+            roles.add(userRole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "super_user":
+                        Role adminRole = roleRepository.findByName(ERole.ROLE_SUPER_USER)
+                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+                        roles.add(adminRole);
+
+                        break;
+                    default:
+                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+                        roles.add(userRole);
+                }
+            });
+        }
+
+        user.setRoles(roles);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("Пользователь успешно зарегистрирован"));

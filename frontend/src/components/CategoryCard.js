@@ -1,13 +1,16 @@
 import React, {useState} from "react";
-import {Card, Button, Input, Popconfirm, Space, ColorPicker} from "antd";
+import {Card, Button, Input, Popconfirm, Space, ColorPicker, Row, Col} from "antd";
 import {EditOutlined, PlusOutlined, DeleteOutlined} from "@ant-design/icons";
 import TaskCard from "./TaskCard";
+import CategoryService from "../services/categoryService";
+import {useDispatch} from "react-redux";
 
-export const CategoryCard = ({category, handleEditCategory, handleDeleteCategory}) => {
+export const CategoryCard = ({category, handleEditCategory}) => {
     const [editedTitle, setEditedTitle] = useState(category.title);
     const [isEditing, setIsEditing] = useState(false);
     const [cardColor, setCardColor] = useState("#333232");
-    const [tasks, setTasks] = useState([]); // Список задач
+    const [tasks, setTasks] = useState([]);
+    const dispatch = useDispatch();
 
     const handleCategoryTitleEdit = (e) => {
         setEditedTitle(e.target.value);
@@ -36,11 +39,21 @@ export const CategoryCard = ({category, handleEditCategory, handleDeleteCategory
     const handleAddTask = (categoryId) => {
         const newTask = {
             id: tasks.length + 1,
-            title: "Новая задача",
+            title: `Новая задача ${tasks.length + 1}`,
             completed: false,
         };
         setTasks([...tasks, newTask]);
     };
+
+    const handleDeleteCategory = (categoryId) => {
+        CategoryService.deleteCategoryById(categoryId, dispatch)
+            .then(() => {
+                console.log("Категория удалена")
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
 
     return (
         <Card
@@ -61,7 +74,7 @@ export const CategoryCard = ({category, handleEditCategory, handleDeleteCategory
                     )}
                 </div>
             }
-            style={{width: "600px", marginBottom: "16px", backgroundColor: cardColor}}
+            style={{width: "800px", marginBottom: "16px", backgroundColor: cardColor}}
             hoverable
         >
             <Space>
@@ -69,8 +82,7 @@ export const CategoryCard = ({category, handleEditCategory, handleDeleteCategory
                     style={{backgroundColor: "white", color: "#333232"}}
                     type="primary"
                     icon={<PlusOutlined/>}
-                    onClick={() => handleAddTask(category.id)}
-                >
+                    onClick={() => handleAddTask(category.id)}>
                     Добавить задачу
                 </Button>
                 <ColorPicker defaultValue={cardColor} onChange={handleColorChange}/>
@@ -84,9 +96,13 @@ export const CategoryCard = ({category, handleEditCategory, handleDeleteCategory
                 </Popconfirm>
             </Space>
             <div style={{marginTop: "16px"}}>
-                {tasks.map((task) => (
-                    <TaskCard key={task.id} task={task}/>
-                ))}
+                <Row gutter={[75, 16]}>
+                    {tasks.map((task) => (
+                        <Col key={task.id} xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <TaskCard task={task}/>
+                        </Col>
+                    ))}
+                </Row>
             </div>
         </Card>
     );

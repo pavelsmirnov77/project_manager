@@ -32,6 +32,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> findAllCategoryByName(String name) {
+        return categoryRepository.findAllByNameContainingIgnoreCase(name);
+    }
+
+    @Override
     public List<Task> getTasksByCategoryId(Long categoryId) {
         return categoryRepository.findTasksByCategoryId(categoryId);
     }

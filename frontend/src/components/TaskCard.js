@@ -1,6 +1,13 @@
 import React, {useState} from "react";
-import {Card, Button, Input, Checkbox, Tooltip} from "antd";
-import {EditOutlined, DeleteOutlined, InboxOutlined} from "@ant-design/icons";
+import {Card, Button, Input, Checkbox, Tooltip, Dropdown, Menu} from "antd";
+import {
+    EditOutlined,
+    DeleteOutlined,
+    InboxOutlined,
+    BellOutlined,
+    CalendarOutlined,
+    MoreOutlined
+} from "@ant-design/icons";
 
 const TaskCard = ({task, handleEditTask, handleDeleteTask, handleArchiveTask}) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
@@ -38,6 +45,23 @@ const TaskCard = ({task, handleEditTask, handleDeleteTask, handleArchiveTask}) =
         handleEditTask(task.id, editedTitle, e.target.checked);
     };
 
+    const menu = (
+        <Menu>
+            <Menu.Item key="notification" disabled={task.archived}>
+                <BellOutlined/> Оповещение
+            </Menu.Item>
+            <Menu.Item key="regularity" disabled={task.archived}>
+                <CalendarOutlined/> Регулярность
+            </Menu.Item>
+            <Menu.Item key="archive" onClick={handleArchiveClick} disabled={task.archived}>
+                <InboxOutlined/> Архивировать
+            </Menu.Item>
+            <Menu.Item key="delete" onClick={handleDeleteClick} disabled={task.archived}>
+                <DeleteOutlined/> Удалить
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <Card
             key={task.id}
@@ -74,29 +98,11 @@ const TaskCard = ({task, handleEditTask, handleDeleteTask, handleArchiveTask}) =
             </Checkbox>
             <div style={{display: "flex", justifyContent: "space-between"}}>
                 <Tooltip title="Редактировать" placement="bottom">
-                    <Button
-                        type="text"
-                        icon={<EditOutlined/>}
-                        onClick={handleEditClick}
-                        disabled={task.archived}
-                    />
+                    <Button type="text" icon={<EditOutlined/>} onClick={handleEditClick} disabled={task.archived}/>
                 </Tooltip>
-                <Tooltip title={task.archived ? "Вернуть из архива" : "Архивировать"} placement="bottom">
-                    <Button
-                        type="text"
-                        icon={<InboxOutlined/>}
-                        onClick={handleArchiveClick}
-                        disabled={task.archived}
-                    />
-                </Tooltip>
-                <Tooltip title="Удалить" placement="bottom">
-                    <Button
-                        type="text"
-                        icon={<DeleteOutlined/>}
-                        onClick={handleDeleteClick}
-                        disabled={task.archived}
-                    />
-                </Tooltip>
+                <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+                    <Button type="text" icon={<MoreOutlined/>} disabled={task.archived}/>
+                </Dropdown>
             </div>
         </Card>
     );

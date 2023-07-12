@@ -13,5 +13,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT t FROM Task t WHERE t.category.id = :categoryId")
     List<Task> findTasksByCategoryId(Long categoryId);
 
-
+    List<Category> findAllByNameContainingIgnoreCase(String name);
 }

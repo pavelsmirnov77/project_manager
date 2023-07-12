@@ -38,6 +38,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Task> findAllTaskNotArchived(String title) {
+        return taskRepository.findAllByTitleAndArchivedFalse(title);
+    }
+
+    @Override
+    public List<Task> findAllTaskArchived(String title) {
+        return taskRepository.findAllByTitleAndArchivedTrue(title);
+    }
+
+    @Override
     public boolean updateTask(Task task) {
         taskRepository.save(task);
         return true;
@@ -55,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
         else throw new NotFoundTask("Задача не найдена");
     }
 
-    public Task changeTaskRegularity(long taskId, ERegularity regularity) {
+    public Task changeTaskRegularity(long taskId, Regularity regularity) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         if (optionalTask.isPresent()) {
             Task task = optionalTask.get();

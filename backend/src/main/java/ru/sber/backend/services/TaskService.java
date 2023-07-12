@@ -31,6 +31,22 @@ public interface TaskService {
     List<Task> findAllTasksByName(String titleTask);
 
     /**
+     * Ищет все неархивные задачи
+     *
+     * @param title имя задачи
+     * @return список неархивных задач
+     */
+    List<Task> findAllTaskNotArchived(String title);
+
+    /**
+     * Ищет все архивные задачи
+     *
+     * @param title имя задачи
+     * @return список архивных задач
+     */
+    List<Task> findAllTaskArchived(String title);
+
+    /**
      * Обновляет информацию о задаче
      *
      * @param task обновляемая задача
@@ -53,7 +69,7 @@ public interface TaskService {
      * @param regularity регулярность выполнения
      * @return измененная задача
      */
-    Task changeTaskRegularity(long taskId, ERegularity regularity);
+    Task changeTaskRegularity(long taskId, Regularity regularity);
 
     /**
      * Изменяет приоритет задачи

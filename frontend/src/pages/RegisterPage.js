@@ -2,22 +2,34 @@ import {Button, Card, Form, Input, message} from "antd";
 import React from "react";
 import {LockOutlined, MailOutlined, UserAddOutlined, UserOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
+import authService from "../services/authService";
 
 const RegistrationPage = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+
     const onFinish = (values) => {
-        console.log("Регистрация прошла успешно");
-        message.success("Вы успешно зарегистрировались");
-        navigate("/api/auth/signin");
+        authService.register(values)
+            .then(() => {
+                message.success('Вы успешно зарегистрированы');
+                navigate('/api/auth/signin');
+            })
+            .catch((error) => {
+                message.error('Ошибка при регистрации');
+                console.error(error);
+            });
     };
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh'}}>
             <Card title="Регистрация" style={{width: 400}}>
-                <Form form={form} layout="vertical" name="registration" onFinish={onFinish}>
+                <Form
+                    form={form}
+                    layout="vertical"
+                    name="register"
+                    onFinish={onFinish}>
                     <Form.Item
-                        name="name"
+                        name="username"
                         label="Имя"
                         rules={[{
                             required: true,

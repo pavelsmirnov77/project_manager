@@ -1,40 +1,50 @@
 import {Button, Card, Form, Input, message} from 'antd';
 import {UserOutlined, LockOutlined, LoginOutlined} from '@ant-design/icons';
 import {useNavigate} from "react-router-dom";
+import authService from "../services/authService";
+import {login} from "../slices/authSlice";
+import {useDispatch} from "react-redux";
 
 const AuthPage = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const onFinish = (values) => {
-        console.log("Авторизация прошла успешно!");
-        message.success("Вы успешно вошли");
-        navigate("/todo/note")
+        authService.login(values).then((user) => {
+            console.log(user)
+            dispatch(login(user))
+            navigate("/todo/note")
+        }, (error) => {
+            const _content = (error.response && error.response.data)
+            error.message ||
+            error.toString();
+            console.log(_content);
+            message.error("Неправильный логин или пароль");
+        })
     };
 
     return (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh'}}>
             <Card title="Авторизация" style={{width: 500}}>
-                <Form name="normal_email" form={form} layout="vertical" onFinish={onFinish}>
+                <Form name="normal_login" form={form} layout="vertical" onFinish={onFinish}>
                     <Form.Item
-                        name="email"
-                        label="Email"
+                        name="username"
+                        label="Логин"
                         rules={[{
                             required: true,
-                            message: 'Введите email'
-                        },
-                            {
-                                type: 'email',
-                                message: 'Некорректный email'
-                            },
-                        ]}
+                            message: 'Введите логин'
+                        }]}
                     >
-                        <Input prefix={<UserOutlined/>} placeholder="Email"/>
+                        <Input prefix={<UserOutlined/>} placeholder="Логин"/>
                     </Form.Item>
                     <Form.Item
                         name="password"
                         label="Пароль"
-                        rules={[{required: true, message: 'Введите пароль'}]}
+                        rules={[{
+                            required: true,
+                            message: 'Введите пароль'
+                        }]}
                     >
                         <Input.Password prefix={<LockOutlined/>} placeholder="Пароль"/>
                     </Form.Item>

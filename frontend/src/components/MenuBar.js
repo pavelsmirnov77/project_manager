@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Input, Button, Avatar } from 'antd';
+import React, {useState} from 'react';
+import {Layout, Menu, Input, Button, Avatar} from 'antd';
 import {
     MenuOutlined,
     SearchOutlined,
@@ -9,9 +9,9 @@ import {
     NotificationOutlined,
     BulbOutlined,
 } from '@ant-design/icons';
-import { Link, useLocation } from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 
-const { Header, Content, Sider } = Layout;
+const {Header, Content, Sider} = Layout;
 
 const MenuBar = () => {
     const [searchValue, setSearchValue] = useState('');
@@ -33,7 +33,7 @@ const MenuBar = () => {
     };
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout style={{minHeight: '100vh'}}>
             <Header
                 style={{
                     background: '#333232',
@@ -46,27 +46,29 @@ const MenuBar = () => {
                     zIndex: 1,
                 }}
             >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                     <Button
                         type="text"
-                        style={{ color: '#fff', marginRight: '16px' }}
+                        style={{color: '#fff', marginRight: '16px'}}
                         onClick={toggleSidebar}
-                        icon={<MenuOutlined />}
+                        icon={<MenuOutlined/>}
                     />
-                    <h1 style={{ color: '#fff', margin: 0 }}>TODO-List</h1>
+                    <h1 style={{color: '#fff', margin: 0}}>TODO-List</h1>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{display: 'flex', alignItems: 'center'}}>
                     <Input
-                        style={{ width: '500px', marginRight: '16px' }}
+                        style={{width: '500px', marginRight: '16px'}}
                         placeholder="Поиск задач..."
-                        prefix={<SearchOutlined />}
+                        prefix={<SearchOutlined/>}
                         value={searchValue}
                         onChange={(e) => handleSearch(e.target.value)}
                     />
-                    <Avatar icon={<UserOutlined />} />
+                    <Link to="/users/profile">
+                        <Avatar icon={<UserOutlined/>}/>
+                    </Link>
                 </div>
             </Header>
-            <Layout style={{ marginTop: '64px' }}>
+            <Layout style={{marginTop: '64px'}}>
                 <Sider
                     theme="dark"
                     trigger={null}
@@ -83,22 +85,22 @@ const MenuBar = () => {
                     }}
                 >
                     <Menu
-                        style={{ background: '#333232' }}
+                        style={{background: '#333232'}}
                         theme="dark"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         onClick={handleMenuClick}
                     >
-                        <Menu.Item key="/todo/note" icon={<BulbOutlined />}>
+                        <Menu.Item key="/todo/note" icon={<BulbOutlined/>}>
                             <Link to="/todo/note">Заметки</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/reminder" icon={<NotificationOutlined />}>
+                        <Menu.Item key="/todo/reminder" icon={<NotificationOutlined/>}>
                             <Link to="/todo/reminder">Напоминания</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/archive" icon={<FileOutlined />}>
+                        <Menu.Item key="/todo/archive" icon={<FileOutlined/>}>
                             <Link to="/todo/archive">Архив</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/trash" icon={<DeleteOutlined />}>
+                        <Menu.Item key="/todo/trash" icon={<DeleteOutlined/>}>
                             <Link to="/todo/trash">Корзина</Link>
                         </Menu.Item>
                     </Menu>

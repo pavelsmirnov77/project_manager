@@ -7,11 +7,13 @@ import ru.sber.backend.entities.Category;
 import ru.sber.backend.services.CategoryService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("todo")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@RequestMapping("todo/note")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -20,11 +22,11 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestBody Category category) {
+    public ResponseEntity<?> createCategory(@RequestBody Category category) {
         long categoryId = categoryService.createCategory(category);
         log.info("Добавление категории с id: {}", categoryId);
 
-        return ResponseEntity.created(URI.create("todo/" + categoryId)).build();
+        return ResponseEntity.created(URI.create("todo/note/" + categoryId)).build();
     }
 
     @GetMapping("/{categoryId}")
@@ -36,6 +38,18 @@ public class CategoryController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping
+    public List<Category> getCategoryByName(@RequestParam(required = false) String name) {
+        if (name == null) {
+            name = "";
+            log.info("Вывод всех категорий");
+        } else {
+            log.info("Поиск категорий по имени {}", name);
+        }
+
+        return categoryService.findAllCategoryByName(name);
     }
 
     @PutMapping
