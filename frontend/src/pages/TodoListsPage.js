@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {motion, AnimatePresence} from "framer-motion";
 import MenuBar from "../components/MenuBar";
-import {DatePicker, Input, Button, Form} from "antd";
+import {DatePicker, Input, Button, Form, Empty} from "antd";
 import {
     PlusOutlined,
-    CloseOutlined,
+    CloseOutlined, AppstoreAddOutlined,
 } from "@ant-design/icons";
 import ruRU from "antd/es/date-picker/locale/ru_RU";
 import moment from "moment";
@@ -161,16 +161,23 @@ export const TodoListsPage = () => {
                             />
                         )}
                     </div>
-                    <div style={{marginTop: "30px"}}>
-                        {categories.map((category) => (
-                            <CategoryCard
-                                key={category.id}
-                                category={category}
-                                handleEditCategory={handleEditCategory}
-                                handleAddTask={handleAddTask}
-                            />
-                        ))}
-                    </div>
+                    {categories.length === 0 ? (
+                        <Empty style={{marginTop: "150px"}}
+                               image={<AppstoreAddOutlined style={{fontSize: 64, color: "rgba(0, 0, 0, 0.5)"}}/>}
+                               description={<span style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список задач пуст</span>}
+                        />
+                    ) : (
+                        <div style={{marginTop: "30px"}}>
+                            {categories.map((category) => (
+                                <CategoryCard
+                                    key={category.id}
+                                    category={category}
+                                    handleEditCategory={handleEditCategory}
+                                    handleAddTask={handleAddTask}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </Form>

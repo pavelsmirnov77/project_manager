@@ -14,7 +14,7 @@ const AuthOrRegisterPage = () => {
             <p>Пожалуйста, выберите действие:</p>
             <div className="auth-buttons">
                 <Link to="/api/auth/signin">
-                    <Button type="primary" size="large" className="auth-button">
+                    <Button type="primary" size="large" className="auth-button" style={{backgroundColor: '#333232'}}>
                         Вход
                     </Button>
                 </Link>

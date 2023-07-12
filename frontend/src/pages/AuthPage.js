@@ -49,7 +49,7 @@ const AuthPage = () => {
                         <Input.Password prefix={<LockOutlined/>} placeholder="Пароль"/>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" icon={<LoginOutlined/>} htmlType="submit">
+                        <Button style={{backgroundColor: '#333232'}} type="primary" icon={<LoginOutlined/>} htmlType="submit">
                             Войти
                         </Button>
                     </Form.Item>

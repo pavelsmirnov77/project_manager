@@ -64,7 +64,7 @@ const RegistrationPage = () => {
                         <Input.Password prefix={<LockOutlined/>} placeholder="Пароль"/>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" icon={<UserAddOutlined/>} htmlType="submit" block>
+                        <Button style={{backgroundColor: '#333232'}} type="primary" icon={<UserAddOutlined/>} htmlType="submit" block>
                             Зарегистрироваться
                         </Button>
                     </Form.Item>

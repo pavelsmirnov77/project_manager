@@ -4,6 +4,7 @@ import {EditOutlined, PlusOutlined, DeleteOutlined} from "@ant-design/icons";
 import TaskCard from "./TaskCard";
 import CategoryService from "../services/categoryService";
 import {useDispatch} from "react-redux";
+import {SketchPicker} from "react-color"
 
 export const CategoryCard = ({category, handleEditCategory}) => {
     const [editedTitle, setEditedTitle] = useState(category.title);
@@ -85,7 +86,7 @@ export const CategoryCard = ({category, handleEditCategory}) => {
                     onClick={() => handleAddTask(category.id)}>
                     Добавить задачу
                 </Button>
-                <ColorPicker defaultValue={cardColor} onChange={handleColorChange}/>
+                <ColorPicker color={cardColor} onChange={handleColorChange}/>
                 <Popconfirm
                     title="Вы уверены, что хотите удалить эту категорию?"
                     okText="Да"
