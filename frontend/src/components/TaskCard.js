@@ -180,6 +180,14 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
                             task.title
                         )}
                     </span>
+                    <Tooltip title="Редактировать" placement="bottom">
+                        <Button
+                            type="text"
+                            icon={<EditOutlined/>}
+                            onClick={handleEditClick}
+                            disabled={task.archived}
+                        />
+                    </Tooltip>
                 </div>
             }
             style={{
@@ -242,14 +250,6 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
             </div>
             <div style={{display: "flex", justifyContent: "space-between", marginTop: "8px"}}>
                 <div style={{display: "flex", alignItems: "center"}}>
-                    <Tooltip title="Редактировать" placement="bottom">
-                        <Button
-                            type="text"
-                            icon={<EditOutlined/>}
-                            onClick={handleEditClick}
-                            disabled={task.archived}
-                        />
-                    </Tooltip>
                     <Dropdown
                         overlay={menuRegularity}
                         visible={showRegularityMenu}

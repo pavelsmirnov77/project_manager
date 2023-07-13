@@ -45,18 +45,31 @@ export const createCategory = (category, dispatch) => {
     }
 };
 
-const updateCategory = (category, dispatch) => {
-    return axios.put(API_URL, category, {headers: authHeader()}).then(
-        () => {
-            getCategories(dispatch)
-        },
-        (error) => {
-            const _content = (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+export const updateCategory = (id, category, dispatch) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const token = user ? user.accessToken : null;
 
-            console.error(_content)
-        });
+    if (token) {
+        return axios
+            .put(API_URL + `/${id}`, category, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+            .then(
+                (response) => {
+                    getCategories(dispatch);
+                }
+            )
+            .catch((error) => {
+                const _content =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+
+                console.error(_content);
+            });
+    }
 };
 
 export const deleteCategory = (id, dispatch) => {

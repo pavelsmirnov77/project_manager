@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/todo")
+@RequestMapping("/todo/tasks")
 public class TaskController {
     private final TaskService taskService;
     private final StatusService statusService;
@@ -40,7 +40,7 @@ public class TaskController {
         long taskId = taskService.createTask(task);
         log.info("Добавление задачи с id: {}", taskId);
 
-        return ResponseEntity.created(URI.create("todo/" + taskId)).build();
+        return ResponseEntity.created(URI.create("todo/tasks/" + taskId)).build();
     }
 
     /**
@@ -58,6 +58,17 @@ public class TaskController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * Получение всех задач
+     *
+     * @return список существующих задач
+     */
+    @GetMapping
+    public List<Task> getTasks() {
+        log.info("Получение всех задач");
+        return taskService.findAllTasks();
     }
 
     /**

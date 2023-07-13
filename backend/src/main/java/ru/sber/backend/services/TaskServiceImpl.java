@@ -8,28 +8,56 @@ import ru.sber.backend.repositories.TaskRepository;
 import ru.sber.backend.repositories.TrashRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TrashRepository trashRepository;
+    private final CategoryService categoryService;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, CategoryService categoryService) {
         this.taskRepository = taskRepository;
         this.trashRepository = trashRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
     public long createTask(Task task) {
+        Priority priority = new Priority();
+        priority.setName(EPriority.LOW);
+        task.setPriority(priority);
+
+        Status status = new Status();
+        status.setName(EStatus.IN_PROGRESS);
+        task.setStatus(status);
+
+        Regularity regularity = new Regularity();
+        regularity.setName(ERegularity.IRREGULAR);
+        task.setRegularity(regularity);
+
         return taskRepository.save(task).getId();
     }
+
 
     @Override
     public Optional<Task> findTaskById(Long taskId) {
         return taskRepository.findById(taskId);
+    }
+
+    @Override
+    public List<Task> findAllTasks() {
+        List<Category> categories = categoryService.findAllCategories();
+        List<Task> allTasks = new ArrayList<>();
+        for (Category category : categories) {
+            List<Task> tasksByCategory = findAllTasksByCategoryId(category.getId());
+            allTasks.addAll(tasksByCategory);
+        }
+        return allTasks;
     }
 
     @Override
@@ -40,6 +68,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findAllTaskNotArchived(String title) {
         return taskRepository.findAllByTitleAndArchivedFalse(title);
+    }
+
+    @Override
+    public List<Task> findAllTasksByCategoryId(long categoryId) {
+        return taskRepository.findAll()
+                .stream()
+                .filter(task -> task.getCategory().getId() == categoryId)
+                .collect(Collectors.toList());
     }
 
     @Override

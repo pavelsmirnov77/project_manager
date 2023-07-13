@@ -39,12 +39,12 @@ public interface CategoryService {
     List<Category> findAllCategories();
 
     /**
-     * Обновление категории
+     * Обновляет категорию
      *
      * @param category обновляемая категория
-     * @return true, если категория успешно обновлена, иначе false
+     * @return обновленная категория
      */
-    boolean updateCategory(Category category);
+    Category updateCategory(Category category);
 
     /**
      * Получает все задачи по заданному id категории

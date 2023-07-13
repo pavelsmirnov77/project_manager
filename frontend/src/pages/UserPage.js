@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Card, Avatar, Typography, Button, Upload, message} from "antd";
 import {UserOutlined, LogoutOutlined, UploadOutlined, BackwardOutlined} from "@ant-design/icons";
 import {useSelector, useDispatch} from "react-redux";
-import {logout} from "../slices/authSlice";
 import {setUser} from "../slices/userSlice";
 import {Link} from "react-router-dom";
 import UserService from "../services/userService";

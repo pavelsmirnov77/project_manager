@@ -1,8 +1,10 @@
 package ru.sber.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.sber.backend.entities.Category;
 import ru.sber.backend.entities.Task;
 import ru.sber.backend.entities.User;
@@ -53,11 +55,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public boolean updateCategory(Category category) {
-        long userId = getUserIdFromSecurityContext();
-        category.setUser(new User(userId));
-        categoryRepository.save(category);
-        return true;
+    public Category updateCategory(Category updatedCategory) {
+        Category category = categoryRepository.findById(updatedCategory.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        category.setName(updatedCategory.getName());
+        return categoryRepository.save(category);
     }
 
     @Override

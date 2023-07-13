@@ -15,11 +15,13 @@ import CategoryService from "../services/categoryService";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate, useParams} from "react-router-dom";
 import categoryService from "../services/categoryService";
+import Clock from "../components/Clock";
+import Calendar from "../components/Calendar";
 
 moment.locale("ru");
 
 const inputVariants = {
-    open: {width: "800px", opacity: 1, display: "flex"},
+    open: {width: "850px", opacity: 1, display: "flex"},
     closed: {width: "0", opacity: 0, display: "none"},
 };
 
@@ -72,6 +74,7 @@ export const TodoListsPage = () => {
                 id: categories.length + 1,
                 user: {id: currentUserId}};
             CategoryService.createCategory(newCategory, dispatch).then(() => {
+                message.success(`Категория "${newCategory.name}" успешно создана!`)
                 CategoryService.getCategories(dispatch);
             })
         }
@@ -100,13 +103,8 @@ export const TodoListsPage = () => {
             <div>
                 <MenuBar/>
                 <div style={{position: "absolute", top: "80px", right: "16px"}}>
-                    <DatePicker
-                        locale={ruRU}
-                        format="DD.MM.YYYY"
-                        picker="date"
-                        open={isDatePickerOpen}
-                        onOpenChange={handleDatePickerOpenChange}
-                    />
+                    <Clock/>
+                    <Calendar/>
                 </div>
                 <div
                     style={{

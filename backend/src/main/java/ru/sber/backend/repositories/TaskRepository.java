@@ -38,4 +38,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
      * @param categoryId id категории
      */
     void deleteAllByCategoryId(Long categoryId);
+
 }

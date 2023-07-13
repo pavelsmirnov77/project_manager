@@ -1,16 +1,22 @@
-import React, {useState} from "react";
-import {Card, Button, Input, Popconfirm, Space, ColorPicker, Row, Col} from "antd";
+import React, {useEffect, useState} from "react";
+import {Card, Button, Input, Popconfirm, Space, ColorPicker, Row, Col, message} from "antd";
 import {EditOutlined, PlusOutlined, DeleteOutlined} from "@ant-design/icons";
 import TaskCard from "./TaskCard";
 import CategoryService from "../services/categoryService";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import taskService from "../services/taskService";
 
-export const CategoryCard = ({category, handleEditCategory}) => {
-    const [editedTitle, setEditedTitle] = useState(category.title);
+export const CategoryCard = ({category}) => {
+    const [editedTitle, setEditedTitle] = useState(category.name);
     const [isEditing, setIsEditing] = useState(false);
     const [cardColor, setCardColor] = useState("#333232");
     const [tasks, setTasks] = useState([]);
     const dispatch = useDispatch();
+    const categories = useSelector((state) => state.categories.categories);
+
+    useEffect(() => {
+        taskService.getAllTasks(dispatch);
+    }, []);
 
     const handleCategoryTitleEdit = (e) => {
         setEditedTitle(e.target.value);
@@ -20,16 +26,22 @@ export const CategoryCard = ({category, handleEditCategory}) => {
         setIsEditing(true);
     };
 
-    const handleTitleSave = () => {
-        if (editedTitle.trim() !== "") {
-            handleEditCategory(category.id, editedTitle);
-            setIsEditing(false);
-        }
+    const handleTitleChange = () => {
+        setIsEditing(false);
+        const updatedCategory = {...category, name: editedTitle};
+        CategoryService.updateCategory(category.id, updatedCategory, dispatch)
+            .then(() => {
+                message.success("Имя категории изменено!")
+                CategoryService.getCategories(dispatch);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     };
 
     const handleTitleCancel = () => {
         setIsEditing(false);
-        setEditedTitle(category.title);
+        setEditedTitle(category.name);
     };
 
     const handleColorChange = (color) => {
@@ -46,14 +58,14 @@ export const CategoryCard = ({category, handleEditCategory}) => {
     };
 
     const handleDeleteCategory = (categoryId) => {
-        CategoryService.deleteCategory(categoryId, dispatch)
+        CategoryService.deleteCategory(category.id, dispatch)
             .then(() => {
-                console.log("Категория удалена!")
+                message.success(`Категория "${category.name}" успешно удалена!`)
             })
             .catch((error) => {
                 console.error(error);
             });
-    }
+    };
 
     return (
         <Card
@@ -61,17 +73,17 @@ export const CategoryCard = ({category, handleEditCategory}) => {
             title={
                 <div style={{display: "flex", alignItems: "center", color: "white"}}>
                     <EditOutlined style={{marginRight: "8px"}} onClick={handleEditClick}/>
-                    Категория: {" "}
+                    Категория:{" "}
                     {isEditing ? (
                         <Input
                             value={editedTitle}
                             onChange={handleCategoryTitleEdit}
-                            onPressEnter={handleTitleSave}
+                            onPressEnter={handleTitleChange}
                             onBlur={handleTitleCancel}
                             autoFocus
                         />
                     ) : (
-                        category.title
+                        category.name
                     )}
                 </div>
             }
@@ -83,7 +95,8 @@ export const CategoryCard = ({category, handleEditCategory}) => {
                     style={{backgroundColor: "white", color: "#333232"}}
                     type="primary"
                     icon={<PlusOutlined/>}
-                    onClick={() => handleAddTask(category.id)}>
+                    onClick={() => handleAddTask(category.id)}
+                >
                     Добавить задачу
                 </Button>
                 <ColorPicker color={cardColor} onChange={handleColorChange}/>

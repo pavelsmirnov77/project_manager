@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Layout, Menu, Input, Button, Avatar} from 'antd';
+import {Layout, Menu, Input, Button, Avatar, Tooltip} from 'antd';
 import {
     MenuOutlined,
     SearchOutlined,
@@ -17,6 +17,7 @@ const MenuBar = () => {
     const [searchValue, setSearchValue] = useState('');
     const [collapsed, setCollapsed] = useState(true);
     const location = useLocation();
+    const user = JSON.parse(localStorage.getItem("user"));
 
     const handleSearch = (value) => {
         setSearchValue(value);
@@ -64,7 +65,12 @@ const MenuBar = () => {
                         onChange={(e) => handleSearch(e.target.value)}
                     />
                     <Link to="/users/profile">
-                        <Avatar icon={<UserOutlined/>}/>
+                        <Tooltip title="Профиль пользователя" placement="bottom">
+                            <span style={{marginLeft: '15px', marginRight: '10px', color: '#fff', fontSize: '18px', fontWeight: 'bold'}}>
+                                {user.username}
+                            </span>
+                            <Avatar icon={<UserOutlined/>}/>
+                        </Tooltip>
                     </Link>
                 </div>
             </Header>

@@ -9,6 +9,7 @@ import ru.sber.backend.services.CategoryService;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -41,20 +42,30 @@ public class CategoryController {
      */
     @GetMapping
     public ResponseEntity<List<Category>> getCategories() {
+        log.info("Получаем список категорий");
         return ResponseEntity.ok().body(categoryService.findAllCategories());
     }
 
     /**
-     * Обновляет информацию о категории
+     * Изменяет информацию о категории
      *
-     * @param category обновляемая категория
-     * @return ответ об успешном обновлении
+     * @param categoryId id категории
+     * @param category изменяемая категория
+     * @return измененная категория
      */
-    @PutMapping
-    public ResponseEntity<?> updateTask(@RequestBody Category category) {
-        categoryService.updateCategory(category);
-        log.info("Обновление информации о категории");
-        return ResponseEntity.ok().body(category);
+    @PutMapping("/{categoryId}")
+    public ResponseEntity<Category> updateCategory(@PathVariable long categoryId, @RequestBody Category category) {
+        Optional<Category> optionalCategory = categoryService.findCategoryById(categoryId);
+        log.info("Категория с id: {} изменена", categoryId);
+        if (optionalCategory.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Category existingCategory = optionalCategory.get();
+        existingCategory.setName(category.getName());
+
+        Category updatedCategory = categoryService.updateCategory(existingCategory);
+        return ResponseEntity.ok(updatedCategory);
     }
 
     /**

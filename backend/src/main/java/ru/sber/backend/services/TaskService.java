@@ -22,6 +22,8 @@ public interface TaskService {
      */
     Optional<Task> findTaskById(Long taskId);
 
+    List<Task> findAllTasks();
+
     /**
      * Ищет все задачи с заданным именем
      *
@@ -37,6 +39,8 @@ public interface TaskService {
      * @return список неархивных задач
      */
     List<Task> findAllTaskNotArchived(String title);
+
+    List<Task> findAllTasksByCategoryId(long categoryId);
 
     /**
      * Ищет все архивные задачи
