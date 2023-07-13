@@ -3,25 +3,38 @@ package ru.sber.backend.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.sber.backend.entities.ERegularity;
-import ru.sber.backend.entities.Regularity;
-import ru.sber.backend.entities.Task;
+import ru.sber.backend.entities.*;
+import ru.sber.backend.services.PriorityService;
+import ru.sber.backend.services.RegularityService;
+import ru.sber.backend.services.StatusService;
 import ru.sber.backend.services.TaskService;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("todo")
+@RequestMapping("/todo")
 public class TaskController {
     private final TaskService taskService;
+    private final StatusService statusService;
+    private final PriorityService priorityService;
+    private final RegularityService regularityService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, StatusService statusService, PriorityService priorityService, RegularityService regularityService) {
         this.taskService = taskService;
+        this.statusService = statusService;
+        this.priorityService = priorityService;
+        this.regularityService = regularityService;
     }
 
+    /**
+     * Создает задачу
+     *
+     * @param task создаваемая задача
+     * @return созданная задача
+     */
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody Task task) {
         long taskId = taskService.createTask(task);
@@ -30,6 +43,12 @@ public class TaskController {
         return ResponseEntity.created(URI.create("todo/" + taskId)).build();
     }
 
+    /**
+     * Получает задачу по id
+     *
+     * @param taskId id задачи
+     * @return найденная задача по заданному id
+     */
     @GetMapping("/{taskId}")
     public ResponseEntity<?> getTaskById(@PathVariable Long taskId) {
         log.info("Получаем задачу с id: {}", taskId);
@@ -41,6 +60,12 @@ public class TaskController {
         }
     }
 
+    /**
+     * Обновляет информацию у задачи
+     *
+     * @param task изменяемая задача
+     * @return ответ об успешном обновлении задачи
+     */
     @PutMapping
     public ResponseEntity<?> updateTask(@RequestBody Task task) {
         taskService.updateTask(task);
@@ -48,6 +73,12 @@ public class TaskController {
         return ResponseEntity.ok().body(task);
     }
 
+    /**
+     * Добавляет задачу в архив
+     *
+     * @param taskId id задачи
+     * @return ответ об удачном или неудачном добавлении в архив
+     */
     @PutMapping("/archive/{taskId}")
     public ResponseEntity<String> addToArchive(@PathVariable("taskId") long taskId) {
         log.info("Добавление задачи с id: {} в архив", taskId);
@@ -59,6 +90,13 @@ public class TaskController {
         }
     }
 
+    /**
+     * Изменяет регулярность задачи
+     *
+     * @param taskId id задачи
+     * @param regularity регулярность
+     * @return ответ об удачном изменении регулярности
+     */
     @PutMapping("/regularity/{taskId}")
     public ResponseEntity<Task> changeTaskRegularity(@PathVariable Long taskId, @RequestBody Regularity regularity) {
         log.info("Изменение регулярности задачи с id: {}", taskId);
@@ -66,9 +104,48 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
 
+    /**
+     * Добавляет товар в корзину
+     *
+     * @param taskId id задачи
+     * @return ответ об удачном добавлении в корзину
+     */
     @DeleteMapping("/trash/{taskId}")
     public ResponseEntity<?> addToTrash(@PathVariable Long taskId) {
         taskService.addToTrash(taskId);
         return ResponseEntity.ok("Задача добавлена в корзину");
+    }
+
+    /**
+     * Получает список статусов задачи
+     *
+     * @return список статусов задачи
+     */
+    @GetMapping("/statuses")
+    public List<Status> getStatuses() {
+        log.info("Получаение статусов");
+        return statusService.findAllCategories();
+    }
+
+    /**
+     * Получает список приоритетов задачи
+     *
+     * @return список приоритетов задачи
+     */
+    @GetMapping("/priorities")
+    public List<Priority> getPriorities() {
+        log.info("Получение приоритетов");
+        return priorityService.findAllPrioriry();
+    }
+
+    /**
+     * Получает список регулярность задач
+     *
+     * @return список регулярность задач
+     */
+    @GetMapping("/regularities")
+    public List<Regularity> getRegularities() {
+        log.info("Получение регулярности");
+        return regularityService.findAllRegularity();
     }
 }

@@ -4,7 +4,7 @@ import ru.sber.backend.entities.Priority;
 
 import java.util.List;
 
-public interface PrioriryService {
+public interface PriorityService {
     /**
      * Ищет все приоритеты
      *

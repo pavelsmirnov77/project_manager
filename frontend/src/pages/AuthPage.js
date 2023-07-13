@@ -1,9 +1,9 @@
-import {Button, Card, Form, Input, message} from 'antd';
-import {UserOutlined, LockOutlined, LoginOutlined} from '@ant-design/icons';
-import {useNavigate} from "react-router-dom";
+import { Button, Card, Form, Input, message } from 'antd';
+import { UserOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
+import { useNavigate, Link } from "react-router-dom";
 import authService from "../services/authService";
-import {login} from "../slices/authSlice";
-import {useDispatch} from "react-redux";
+import { login } from "../slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const AuthPage = () => {
     const [form] = Form.useForm();
@@ -14,19 +14,18 @@ const AuthPage = () => {
         authService.login(values).then((user) => {
             console.log(user)
             dispatch(login(user))
+            message.success("Вы успешно вошли в аккаунт! Здравствуйте!")
             navigate("/todo/note")
         }, (error) => {
-            const _content = (error.response && error.response.data)
-            error.message ||
-            error.toString();
+            const _content = (error.response && error.response.data) || error.message || error.toString();
             console.log(_content);
-            message.error("Неправильный логин или пароль");
+            message.error("Неправильный логин или пароль!");
         })
     };
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh'}}>
-            <Card title="Авторизация" style={{width: 500}}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+            <Card title="Авторизация" style={{ width: 500 }}>
                 <Form name="normal_login" form={form} layout="vertical" onFinish={onFinish}>
                     <Form.Item
                         name="username"
@@ -36,7 +35,7 @@ const AuthPage = () => {
                             message: 'Введите логин'
                         }]}
                     >
-                        <Input prefix={<UserOutlined/>} placeholder="Логин"/>
+                        <Input prefix={<UserOutlined />} placeholder="Логин" />
                     </Form.Item>
                     <Form.Item
                         name="password"
@@ -46,14 +45,18 @@ const AuthPage = () => {
                             message: 'Введите пароль'
                         }]}
                     >
-                        <Input.Password prefix={<LockOutlined/>} placeholder="Пароль"/>
+                        <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
                     </Form.Item>
                     <Form.Item>
-                        <Button style={{backgroundColor: '#333232'}} type="primary" icon={<LoginOutlined/>} htmlType="submit">
+                        <Button style={{ backgroundColor: '#333232' }} type="primary" icon={<LoginOutlined />} htmlType="submit">
                             Войти
                         </Button>
                     </Form.Item>
                 </Form>
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <span>У вас нет аккаунта?</span>{" "}
+                    <Link to="/api/auth/signup">Зарегистрируйтесь</Link>
+                </div>
             </Card>
         </div>
     );

@@ -1,11 +1,14 @@
 package ru.sber.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.sber.backend.entities.Category;
 import ru.sber.backend.entities.Task;
+import ru.sber.backend.entities.User;
 import ru.sber.backend.repositories.CategoryRepository;
 import ru.sber.backend.repositories.TaskRepository;
+import ru.sber.backend.security.services.UserDetailsImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,8 +25,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public long createCategory(Category category) {
-        return categoryRepository.save(category).getId();
+    public Category createCategory(Category category) {
+        long userId = getUserIdFromSecurityContext();
+        category.setUser(new User(userId));
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -37,20 +42,38 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> findAllCategories() {
+        long userId = getUserIdFromSecurityContext();
+        return categoryRepository.findAllByUser_Id(userId);
+    }
+
+    @Override
     public List<Task> getTasksByCategoryId(Long categoryId) {
         return categoryRepository.findTasksByCategoryId(categoryId);
     }
 
     @Override
     public boolean updateCategory(Category category) {
+        long userId = getUserIdFromSecurityContext();
+        category.setUser(new User(userId));
         categoryRepository.save(category);
         return true;
     }
 
     @Override
     public boolean deleteCategoryById(Long categoryId) {
-        taskRepository.deleteAllByCategoryId(categoryId);
         categoryRepository.deleteById(categoryId);
         return true;
+    }
+
+    private long getUserIdFromSecurityContext() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetailsImpl) {
+            return ((UserDetailsImpl) principal).getId();
+        } else {
+            throw new RuntimeException("Пользователь не найден");
+        }
     }
 }

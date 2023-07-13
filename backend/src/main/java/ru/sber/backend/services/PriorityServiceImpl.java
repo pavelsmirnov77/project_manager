@@ -8,11 +8,11 @@ import ru.sber.backend.repositories.PrioriryRepository;
 import java.util.List;
 
 @Service
-public class PrioriryServiceImpl implements PrioriryService{
+public class PriorityServiceImpl implements PriorityService {
     private final PrioriryRepository prioriryRepository;
 
     @Autowired
-    public PrioriryServiceImpl(PrioriryRepository prioriryRepository) {
+    public PriorityServiceImpl(PrioriryRepository prioriryRepository) {
         this.prioriryRepository = prioriryRepository;
     }
 

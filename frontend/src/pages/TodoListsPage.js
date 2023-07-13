@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {motion, AnimatePresence} from "framer-motion";
 import MenuBar from "../components/MenuBar";
-import {DatePicker, Input, Button, Form, Empty} from "antd";
+import {DatePicker, Input, Button, Form, Empty, message} from "antd";
 import {
     PlusOutlined,
     CloseOutlined, AppstoreAddOutlined,
@@ -9,9 +9,12 @@ import {
 import ruRU from "antd/es/date-picker/locale/ru_RU";
 import moment from "moment";
 import "moment/locale/ru";
+import taskService from "../services/taskService";
 import CategoryCard from "../components/CategoryCard";
 import CategoryService from "../services/categoryService";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {useNavigate, useParams} from "react-router-dom";
+import categoryService from "../services/categoryService";
 
 moment.locale("ru");
 
@@ -21,22 +24,23 @@ const inputVariants = {
 };
 
 export const TodoListsPage = () => {
+    const {id} = useParams();
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const [showCategoryInput, setShowCategoryInput] = useState(false);
     const [categoryName, setCategoryName] = useState("");
-    const [categories, setCategories] = useState([]);
+    const [setCategories] = useState([]);
     const dispatch = useDispatch();
+    const categories = useSelector((state) => state.categories.categories);
     const [form] = Form.useForm();
+    const selectedCategory = useSelector((state) => state.categories.selectedCategory);
+    const categoriesIds = categories.map((category) => category.id);
 
     useEffect(() => {
-        CategoryService.getCategories()
-            .then((data) => {
-                setCategories(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
+        if (selectedCategory && categoriesIds.includes(selectedCategory.id)) {
+            taskService.getTasksFromCategory(id, dispatch);
+        }
+    }, [selectedCategory]);
+
 
     const handleDatePickerOpenChange = (open) => {
         setIsDatePickerOpen(open);
@@ -55,22 +59,27 @@ export const TodoListsPage = () => {
         setShowCategoryInput(false);
     };
 
-    const onFinish = () => {
-        if (categoryName.trim() !== "") {
-            const newCategory = {title: categoryName, id: categories.length + 1};
-            setCategories([...categories, newCategory]);
-            setCategoryName("");
-            setShowCategoryInput(false);
-        }
+    const setCategory = (id) => {
+        categoryService.selectCategory(id, dispatch)
+    }
 
-        CategoryService.createCategory(categoryName, dispatch)
-            .then(() => {
-                form.resetFields();
+    const handleCreateCategory = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const currentUserId = user ? user.id : null;
+        if (currentUserId) {
+            const newCategory = {
+                name: categoryName,
+                id: categories.length + 1,
+                user: {id: currentUserId}};
+            CategoryService.createCategory(newCategory, dispatch).then(() => {
+                CategoryService.getCategories(dispatch);
             })
-            .catch((error) => {
-                console.error(error);
-            });
+        }
     };
+
+    useEffect(() => {
+        categoryService.getCategories(dispatch)
+    }, []);
 
     const handleEditCategory = (categoryId, newTitle) => {
         const updatedCategories = categories.map((category) => {
@@ -79,7 +88,7 @@ export const TodoListsPage = () => {
             }
             return category;
         });
-        setCategories(updatedCategories);
+        setCategory(updatedCategories);
     };
 
     const handleAddTask = (categoryId) => {
@@ -87,7 +96,7 @@ export const TodoListsPage = () => {
     };
 
     return (
-        <Form form={form} onFinish={onFinish}>
+        <Form form={form} onFinish={handleCreateCategory}>
             <div>
                 <MenuBar/>
                 <div style={{position: "absolute", top: "80px", right: "16px"}}>
@@ -164,7 +173,8 @@ export const TodoListsPage = () => {
                     {categories.length === 0 ? (
                         <Empty style={{marginTop: "150px"}}
                                image={<AppstoreAddOutlined style={{fontSize: 64, color: "rgba(0, 0, 0, 0.5)"}}/>}
-                               description={<span style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список задач пуст</span>}
+                               description={<span
+                                   style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список задач пуст</span>}
                         />
                     ) : (
                         <div style={{marginTop: "30px"}}>

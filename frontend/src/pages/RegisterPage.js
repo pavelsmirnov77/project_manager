@@ -1,7 +1,7 @@
 import {Button, Card, Form, Input, message} from "antd";
 import React from "react";
 import {LockOutlined, MailOutlined, UserAddOutlined, UserOutlined} from "@ant-design/icons";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import authService from "../services/authService";
 
 const RegistrationPage = () => {
@@ -21,7 +21,7 @@ const RegistrationPage = () => {
     };
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh'}}>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '70vh'}}>
             <Card title="Регистрация" style={{width: 400}}>
                 <Form
                     form={form}
@@ -69,6 +69,10 @@ const RegistrationPage = () => {
                         </Button>
                     </Form.Item>
                 </Form>
+                <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                    <span>Уже зарегистрированы?</span>{" "}
+                    <Link to="/api/auth/signin">Войдите в аккаунт</Link>
+                </div>
             </Card>
         </div>
     );

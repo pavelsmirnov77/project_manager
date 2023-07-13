@@ -3,9 +3,9 @@ package ru.sber.backend.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.sber.backend.entities.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ru.sber.backend.entities.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;

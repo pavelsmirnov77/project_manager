@@ -7,7 +7,6 @@ import ru.sber.backend.services.TrashService;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("trash")
 public class TrashController {
     private final TrashService trashService;
@@ -16,6 +15,12 @@ public class TrashController {
         this.trashService = trashService;
     }
 
+    /**
+     * Удаляет задачу из корзины
+     *
+     * @param taskId id задачи
+     * @return ответ об удачнои или неудачном удалении
+     */
     @DeleteMapping("/{taskId}")
     public ResponseEntity<?> deleteTask(@PathVariable Long taskId) {
         log.info("Удаление задачи с id: {}", taskId);
@@ -31,6 +36,12 @@ public class TrashController {
         }
     }
 
+    /**
+     * Восстанавливает задачу из корзины в общий список задач
+     *
+     * @param taskId id задачи
+     * @return ответ об успешном восстановлении задачи
+     */
     @PutMapping("/restore/{taskId}")
     public ResponseEntity<String> restoreFromTrash(@PathVariable Long taskId) {
         trashService.restoreFromTrash(taskId);

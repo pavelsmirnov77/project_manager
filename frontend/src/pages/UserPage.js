@@ -1,20 +1,28 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Card, Avatar, Typography, Button, Upload, message} from "antd";
 import {UserOutlined, LogoutOutlined, UploadOutlined, BackwardOutlined} from "@ant-design/icons";
 import {useSelector, useDispatch} from "react-redux";
 import {logout} from "../slices/authSlice";
 import {setUser} from "../slices/userSlice";
 import {Link} from "react-router-dom";
+import UserService from "../services/userService";
+import AuthService from "../services/authService";
 
 const {Title, Text} = Typography;
 
 const UserProfilePage = () => {
     const dispatch = useDispatch();
-    const {user} = useSelector((state) => state.user);
+    const userId = useSelector((state) => state.user.user.id);
+    const user = JSON.parse(localStorage.getItem("user"));
     const [avatar, setAvatar] = useState(null);
 
+    useEffect(() => {
+        UserService.getUser(userId, dispatch);
+    }, []);
+
     const handleLogout = () => {
-        dispatch(logout());
+        AuthService.logout();
+        message.success("Вы успешно вышли! До свидания!")
     };
 
     const handleAvatarUpload = (file) => {

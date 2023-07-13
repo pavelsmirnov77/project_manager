@@ -13,7 +13,7 @@ public interface CategoryService {
      * @param category создаваемая категория
      * @return id созданной категории
      */
-    long createCategory(Category category);
+    Category createCategory(Category category);
 
     /**
      * Ищет категорию по заданному id
@@ -30,6 +30,13 @@ public interface CategoryService {
      * @return список категорий с заданным именем
      */
     List<Category> findAllCategoryByName(String name);
+
+    /**
+     * Ищет все категории
+     *
+     * @return список найденных категорий
+     */
+    List<Category> findAllCategories();
 
     /**
      * Обновление категории

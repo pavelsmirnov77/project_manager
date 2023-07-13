@@ -1,13 +1,13 @@
 import axios from "axios";
-import {set} from "../slices/userSlice";
+import {setUser} from "../slices/userSlice";
 import authHeader from "./authHeader";
 
-const API_URL = "http://localhost:8081/users";
+const API_URL = "/users";
 
 const getUser = (id, dispatch) => {
     return axios.get(API_URL + `/${id}`,{headers: authHeader()}).then(
         (response) => {
-            dispatch(set(response.data));
+            dispatch(setUser(response.data));
         },
         (error) => {
             const _content = (error.response && error.response.data) ||
@@ -16,9 +16,8 @@ const getUser = (id, dispatch) => {
 
             console.error(_content)
 
-            dispatch(set([]));
+            dispatch(setUser([]));
         });
-
 };
 
 const userService = {

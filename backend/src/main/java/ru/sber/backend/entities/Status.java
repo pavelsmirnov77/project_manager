@@ -17,5 +17,5 @@ public class Status {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private EStatus status;
+    private EStatus name;
 }

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Card,
     Button,
@@ -16,24 +16,50 @@ import {
     DeleteOutlined,
     InboxOutlined,
     BellOutlined,
-    CalendarOutlined,
+    CalendarOutlined, ExclamationOutlined,
 } from "@ant-design/icons";
+import {useDispatch, useSelector} from "react-redux";
+import taskService from "../services/taskService";
 
 const {RangePicker} = TimePicker;
 
-const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
+const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
+    const [editedDescription, setEditedDescription] = useState(task.description);
     const [showNotificationForm, setShowNotificationForm] = useState(false);
     const [showRegularityMenu, setShowRegularityMenu] = useState(false);
+    const [showPriorityMenu, setShowPriorityMenu] = useState(false);
     const [notificationDate, setNotificationDate] = useState(null);
     const [notificationTime, setNotificationTime] = useState(null);
-    const [selectedRegularity, setSelectedRegularity] = useState("не регулярно");
-    const [selectedReminder] = useState("не напоминать");
+    const [selectedRegularity, setSelectedRegularity] = useState("не выставлена");
+    const [selectedReminder] = useState("не выставлено");
+    const [selectedPriority, setSelectedPriority] = useState("не выставлен");
+    const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
     const [isCompleted, setIsCompleted] = useState(task.completed);
+    const dispatch = useDispatch();
+    const statuses = useSelector((state) => state.tasks.statuses);
+    const regularities = useSelector((state) => state.tasks.regularities);
+    const priorities = useSelector((state) => state.tasks.priorities);
+
+    useEffect(() => {
+        taskService.getStatuses(dispatch)
+        taskService.getPriorities(dispatch)
+        taskService.getRegularities(dispatch)
+    }, [selectedTask]);
 
     const handleTaskTitleEdit = (e) => {
         setEditedTitle(e.target.value);
+    };
+
+    const handleDescriptionEdit = (e) => {
+        setEditedDescription(e.target.value);
+    };
+
+    const handleDescriptionSave = () => {
+        setIsDescriptionEditing(false);
+        // Вызов функции для обновления описания задачи в базе данных
+        // Например: taskService.updateTaskDescription(task.id, editedDescription);
     };
 
     const handleEditClick = () => {
@@ -75,6 +101,10 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
         setShowRegularityMenu(!showRegularityMenu);
     };
 
+    const handlePriorityClick = () => {
+        setShowPriorityMenu(!showPriorityMenu);
+    }
+
     const handleNotificationDateChange = (date, dateString) => {
         setNotificationDate(dateString);
     };
@@ -95,24 +125,34 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
     };
 
     const handleRegularitySelect = (e) => {
-        setSelectedRegularity(e.key);
+        setSelectedRegularity(e.item.props.children);
+    };
+
+    const handlePrioritySelect = (e) => {
+        setSelectedPriority(e.item.props.children);
     };
 
     const handleEditTask = (taskId, editedTitle) => {
         console.log("handleEditTask:", taskId, editedTitle);
     };
 
-    const menu = (
+    const menuRegularity = (
         <Menu onClick={handleRegularitySelect}>
-            <Menu.Item key="daily" disabled={task.archived}>
-                Ежедневно
-            </Menu.Item>
-            <Menu.Item key="weekly" disabled={task.archived}>
-                Еженедельно
-            </Menu.Item>
-            <Menu.Item key="monthly" disabled={task.archived}>
-                Ежемесячно
-            </Menu.Item>
+            {regularities.map((regularity) => (
+                <Menu.Item key={regularity.id} disabled={task.archived}>
+                    {regularity.name}
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
+
+    const menuPriority = (
+        <Menu onClick={handlePrioritySelect}>
+            {priorities.map((priority) => (
+                <Menu.Item key={priority.id} disabled={task.archived}>
+                    {priority.name}
+                </Menu.Item>
+            ))}
         </Menu>
     );
 
@@ -143,13 +183,49 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
                 </div>
             }
             style={{
-                width: "200px",
+                width: "250px",
                 marginBottom: "16px",
                 backgroundColor: "#f5f5f5",
                 color: task.archived ? "#bbb" : "inherit",
             }}
             hoverable
         >
+            {isDescriptionEditing ? (
+                <Input.TextArea
+                    value={editedDescription}
+                    onChange={handleDescriptionEdit}
+                    onPressEnter={handleDescriptionSave}
+                    onBlur={handleDescriptionSave}
+                    autoFocus
+                    rows={4}
+                />
+            ) : (
+                <div style={{marginTop: "8px"}}>
+                    <span style={{fontWeight: "bold"}}>Описание:</span>{" "}
+                    {task.description ? (
+                        <>
+                            {task.description}{" "}
+                            <Tooltip title="Редактировать описание" placement="top">
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<EditOutlined/>}
+                                    onClick={() => setIsDescriptionEditing(true)}
+                                />
+                            </Tooltip>
+                        </>
+                    ) : (
+                        <Tooltip title="Добавить описание" placement="top">
+                            <Button
+                                type="text"
+                                size="small"
+                                icon={<EditOutlined/>}
+                                onClick={() => setIsDescriptionEditing(true)}
+                            />
+                        </Tooltip>
+                    )}
+                </div>
+            )}
             <div>
                 <div>
                     <span style={{fontWeight: "bold"}}>Регулярность:</span>{" "}
@@ -158,6 +234,10 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
                 <div>
                     <span style={{fontWeight: "bold"}}>Напомнить:</span>{" "}
                     {selectedReminder}
+                </div>
+                <div>
+                    <span style={{fontWeight: "bold"}}>Приоритет:</span>{" "}
+                    {selectedPriority}
                 </div>
             </div>
             <div style={{display: "flex", justifyContent: "space-between", marginTop: "8px"}}>
@@ -171,7 +251,7 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
                         />
                     </Tooltip>
                     <Dropdown
-                        overlay={menu}
+                        overlay={menuRegularity}
                         visible={showRegularityMenu}
                         onVisibleChange={handleRegularityClick}
                         placement="bottomRight"
@@ -179,6 +259,18 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask}) => {
                         <Button
                             type="text"
                             icon={<CalendarOutlined/>}
+                            disabled={task.archived}
+                        />
+                    </Dropdown>
+                    <Dropdown
+                        overlay={menuPriority}
+                        visible={showPriorityMenu}
+                        onVisibleChange={handlePriorityClick}
+                        placement="bottomRight"
+                    >
+                        <Button
+                            type="text"
+                            icon={<ExclamationOutlined />}
                             disabled={task.archived}
                         />
                     </Dropdown>

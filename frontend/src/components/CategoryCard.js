@@ -4,7 +4,6 @@ import {EditOutlined, PlusOutlined, DeleteOutlined} from "@ant-design/icons";
 import TaskCard from "./TaskCard";
 import CategoryService from "../services/categoryService";
 import {useDispatch} from "react-redux";
-import {SketchPicker} from "react-color"
 
 export const CategoryCard = ({category, handleEditCategory}) => {
     const [editedTitle, setEditedTitle] = useState(category.title);
@@ -47,9 +46,9 @@ export const CategoryCard = ({category, handleEditCategory}) => {
     };
 
     const handleDeleteCategory = (categoryId) => {
-        CategoryService.deleteCategoryById(categoryId, dispatch)
+        CategoryService.deleteCategory(categoryId, dispatch)
             .then(() => {
-                console.log("Категория удалена")
+                console.log("Категория удалена!")
             })
             .catch((error) => {
                 console.error(error);
@@ -62,6 +61,7 @@ export const CategoryCard = ({category, handleEditCategory}) => {
             title={
                 <div style={{display: "flex", alignItems: "center", color: "white"}}>
                     <EditOutlined style={{marginRight: "8px"}} onClick={handleEditClick}/>
+                    Категория: {" "}
                     {isEditing ? (
                         <Input
                             value={editedTitle}
@@ -75,7 +75,7 @@ export const CategoryCard = ({category, handleEditCategory}) => {
                     )}
                 </div>
             }
-            style={{width: "800px", marginBottom: "16px", backgroundColor: cardColor}}
+            style={{width: "850px", marginBottom: "16px", backgroundColor: cardColor}}
             hoverable
         >
             <Space>
@@ -97,7 +97,7 @@ export const CategoryCard = ({category, handleEditCategory}) => {
                 </Popconfirm>
             </Space>
             <div style={{marginTop: "16px"}}>
-                <Row gutter={[75, 16]}>
+                <Row gutter={[30, 16]}>
                     {tasks.map((task) => (
                         <Col key={task.id} xs={24} sm={12} md={8} lg={8} xl={8}>
                             <TaskCard task={task}/>

@@ -3,17 +3,15 @@ package ru.sber.backend.security.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
-import ru.sber.backend.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import ru.sber.backend.security.services.UserDetailsImpl;
 
 import java.security.Key;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtUtils {
 
@@ -48,6 +46,7 @@ public class JwtUtils {
     }
 
     public void validateJwtToken(String authToken) {
+
         if (authToken == null) {
             throw new BadCredentialsException("Не передан JWT-токен");
         }

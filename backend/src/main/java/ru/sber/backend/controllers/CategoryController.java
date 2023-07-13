@@ -1,6 +1,7 @@
 package ru.sber.backend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.backend.entities.Category;
@@ -8,12 +9,10 @@ import ru.sber.backend.services.CategoryService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("todo/note")
+@RequestMapping("/todo/note")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -21,37 +20,36 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    /**
+     * Создает категорию
+     *
+     * @param category создаваемая категория
+     * @return ответ об успешном создании категории
+     */
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
-        long categoryId = categoryService.createCategory(category);
-        log.info("Добавление категории с id: {}", categoryId);
+        Category createdCategory = categoryService.createCategory(category);
+        log.info("Добавление категории с id: {}", createdCategory.getId());
 
-        return ResponseEntity.created(URI.create("todo/note/" + categoryId)).build();
+        return ResponseEntity.ok(createdCategory);
     }
 
-    @GetMapping("/{categoryId}")
-    public ResponseEntity<?> getCategoryById(@PathVariable Long categoryId) {
-        log.info("Получаем категорию с id: {}", categoryId);
-        Optional<Category> category = categoryService.findCategoryById(categoryId);
-        if (category.isPresent()) {
-            return ResponseEntity.ok().body(category.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+    /**
+     * Получает список категорий
+     *
+     * @return список категорий
+     */
     @GetMapping
-    public List<Category> getCategoryByName(@RequestParam(required = false) String name) {
-        if (name == null) {
-            name = "";
-            log.info("Вывод всех категорий");
-        } else {
-            log.info("Поиск категорий по имени {}", name);
-        }
-
-        return categoryService.findAllCategoryByName(name);
+    public ResponseEntity<List<Category>> getCategories() {
+        return ResponseEntity.ok().body(categoryService.findAllCategories());
     }
 
+    /**
+     * Обновляет информацию о категории
+     *
+     * @param category обновляемая категория
+     * @return ответ об успешном обновлении
+     */
     @PutMapping
     public ResponseEntity<?> updateTask(@RequestBody Category category) {
         categoryService.updateCategory(category);
@@ -59,6 +57,12 @@ public class CategoryController {
         return ResponseEntity.ok().body(category);
     }
 
+    /**
+     * Удаляет категорию из общего списка
+     *
+     * @param categoryId id категории
+     * @return ответ об успешном или неуспешном удалении
+     */
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<?> deleteTask(@PathVariable Long categoryId) {
         log.info("Удаление категории с id: {}", categoryId);

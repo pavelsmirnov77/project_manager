@@ -17,5 +17,5 @@ public class Regularity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ERegularity regularity;
+    private ERegularity name;
 }

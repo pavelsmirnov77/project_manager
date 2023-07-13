@@ -1,16 +1,23 @@
 import {createSlice} from "@reduxjs/toolkit";
 
-const categorySlice = createSlice({
-    name: "categories",
+const selectedCategory = JSON.parse(localStorage.getItem("selected_category"));
+
+export const categoriesSlice = createSlice({
+    name: 'categories',
     initialState: {
-        category: []
+        categories: [],
+        selectedCategory: selectedCategory
     },
     reducers: {
-        setCategory: (state, action) => {
-            state.category = action.payload;
+        setAllCategories: (state, action) => {
+            state.categories = action.payload;
         },
+        setSelectedCategory: (state, action) => {
+            state.selectedCategory = action.payload;
+        }
     },
-});
+})
 
-export const {setCategory} = categorySlice.actions;
-export default categorySlice.reducer;
+export const {setSelectedCategory, setAllCategories} = categoriesSlice.actions;
+
+export default categoriesSlice.reducer;

@@ -1,6 +1,14 @@
 package ru.sber.backend.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import ru.sber.backend.entities.ERole;
 import ru.sber.backend.entities.Role;
 import ru.sber.backend.entities.User;
@@ -12,20 +20,15 @@ import ru.sber.backend.repositories.RoleRepository;
 import ru.sber.backend.repositories.UserRepository;
 import ru.sber.backend.security.jwt.JwtUtils;
 import ru.sber.backend.security.services.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Контроллер для аутентификации и регистрации пользователей.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -45,6 +48,12 @@ public class AuthController {
         this.jwtUtils = jwtUtils;
     }
 
+    /**
+     * Метод для аутентификации пользователя.
+     *
+     * @param loginRequest Объект с данными для аутентификации
+     * @return Возвращает ответ с токеном аутентификации и ролями пользователя
+     */
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -68,6 +77,12 @@ public class AuthController {
                 .ok(body);
     }
 
+    /**
+     * Метод для регистрации нового пользователя.
+     *
+     * @param signUpRequest объект с данными для регистрации
+     * @return Возвращает ответ об успешной регистрации или об ошибке
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -78,33 +93,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Email уже используется"));
         }
 
-        // Создаем нового пользователя
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "super_user":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_SUPER_USER)
-                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-                        roles.add(adminRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
-                        roles.add(userRole);
-                }
-            });
-        }
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Роль не найдена"));
+        roles.add(userRole);
 
         user.setRoles(roles);
         userRepository.save(user);
