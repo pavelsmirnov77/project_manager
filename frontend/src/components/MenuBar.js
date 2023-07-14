@@ -53,7 +53,13 @@ const MenuBar = () => {
                 <div style={{display: 'flex', alignItems: 'center'}}>
                     <Link to="/users/profile">
                         <Tooltip title="Профиль пользователя" placement="bottom">
-                            <span style={{marginLeft: '15px', marginRight: '10px', color: '#fff', fontSize: '18px', fontWeight: 'bold'}}>
+                            <span style={{
+                                marginLeft: '15px',
+                                marginRight: '10px',
+                                color: '#fff',
+                                fontSize: '18px',
+                                fontWeight: 'bold'
+                            }}>
                                 {user.username}
                             </span>
                             <Avatar icon={<UserOutlined/>}/>

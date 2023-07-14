@@ -54,8 +54,6 @@ const getTasksFromCategory = (category_id, dispatch) => {
         );
 };
 
-
-
 const getStatuses = (dispatch) => {
     return axios
         .get(API_URL + "/statuses", {headers: authHeader()})

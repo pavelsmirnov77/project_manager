@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     Card,
     Button,
@@ -19,12 +19,12 @@ import {
     CalendarOutlined,
     ExclamationOutlined,
 } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import taskService from "../services/taskService";
 
-const { RangePicker } = TimePicker;
+const {RangePicker} = TimePicker;
 
-const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
+const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
     const [editedDescription, setEditedDescription] = useState(task.description);
@@ -145,7 +145,7 @@ const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
     };
 
     const updateTaskTitle = (taskId, editedTitle) => {
-        const updatedTask = { ...task, title: editedTitle };
+        const updatedTask = {...task, title: editedTitle};
         taskService
             .updateTask(task.category_id, updatedTask, dispatch)
             .then(() => {
@@ -159,7 +159,7 @@ const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
     };
 
     const updateTaskDescription = (taskId, editedDescription) => {
-        const updatedTask = { ...task, description: editedDescription };
+        const updatedTask = {...task, description: editedDescription};
         taskService
             .updateTask(task.category_id, updatedTask, dispatch)
             .then(() => {
@@ -174,7 +174,7 @@ const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
 
     const saveTaskNotification = (taskId, date, time) => {
         const notificationDateTime = date && time ? `${date} ${time}` : null;
-        const updatedTask = { ...task, notification: notificationDateTime };
+        const updatedTask = {...task, notification: notificationDateTime};
         taskService
             .updateTask(task.category_id, updatedTask, dispatch)
             .then(() => {
@@ -321,7 +321,7 @@ const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
                     >
                         <Button
                             type="text"
-                            icon={<ExclamationOutlined />}
+                            icon={<ExclamationOutlined/>}
                             disabled={task.archived}
                         />
                     </Dropdown>

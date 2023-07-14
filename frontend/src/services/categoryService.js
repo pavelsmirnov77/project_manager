@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setAllCategories, setSelectedCategory } from "../slices/categorySlice";
+import {setAllCategories, setSelectedCategory} from "../slices/categorySlice";
 import authHeader from "./authHeader";
 
 const API_URL = "/todo/note";
@@ -74,7 +74,7 @@ export const updateCategory = (id, category, dispatch) => {
 
 export const deleteCategory = (id, dispatch) => {
     return axios
-        .delete(API_URL + `/${id}`, { headers: authHeader() })
+        .delete(API_URL + `/${id}`, {headers: authHeader()})
         .then(
             (response) => {
                 getCategories(dispatch);

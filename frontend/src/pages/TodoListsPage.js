@@ -72,7 +72,8 @@ export const TodoListsPage = () => {
             const newCategory = {
                 name: categoryName,
                 id: categories.length + 1,
-                user: {id: currentUserId}};
+                user: {id: currentUserId}
+            };
             CategoryService.createCategory(newCategory, dispatch).then(() => {
                 message.success(`Категория "${newCategory.name}" успешно создана!`)
                 CategoryService.getCategories(dispatch);

@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, DatePicker } from "antd";
+import {Card, DatePicker} from "antd";
 
-const { RangePicker } = DatePicker;
+const {RangePicker} = DatePicker;
 
 const Calendar = () => {
     return (
@@ -23,7 +23,7 @@ const Calendar = () => {
                     Календарь
                 </div>
                 <DatePicker
-                    style={{ width: "100%" }}
+                    style={{width: "100%"}}
                     autoFocus
                     format="DD-MM-YYYY"
                 />

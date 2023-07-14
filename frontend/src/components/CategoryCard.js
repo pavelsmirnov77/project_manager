@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, Button, Input, Popconfirm, Space, Row, Col, message, Dropdown, Menu } from "antd";
+import React, {useEffect, useState} from "react";
+import {Card, Button, Input, Popconfirm, Space, Row, Col, message, Dropdown, Menu} from "antd";
 import {
     EditOutlined,
     PlusOutlined,
@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import TaskCard from "./TaskCard";
 import CategoryService from "../services/categoryService";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import taskService from "../services/taskService";
 
 const colorOptions = [
@@ -22,7 +22,7 @@ const colorOptions = [
     "#722ED1",
 ];
 
-export const CategoryCard = ({ category }) => {
+export const CategoryCard = ({category}) => {
     const [editedTitle, setEditedTitle] = useState(category.name);
     const [isEditing, setIsEditing] = useState(false);
     const [cardColor, setCardColor] = useState("#333232");
@@ -58,7 +58,7 @@ export const CategoryCard = ({ category }) => {
 
     const handleTitleChange = () => {
         setIsEditing(false);
-        const updatedCategory = { ...category, name: editedTitle };
+        const updatedCategory = {...category, name: editedTitle};
         CategoryService.updateCategory(category.id, updatedCategory, dispatch)
             .then(() => {
                 message.success("Имя категории изменено!");
@@ -78,7 +78,7 @@ export const CategoryCard = ({ category }) => {
         setCardColor(color);
     };
 
-    const handleColorMenuClick = ({ key }) => {
+    const handleColorMenuClick = ({key}) => {
         setCardColor(key);
     };
 
@@ -144,7 +144,7 @@ export const CategoryCard = ({ category }) => {
         <Menu onClick={handleColorMenuClick}>
             {colorOptions.map((color) => (
                 <Menu.Item key={color}>
-                    <div style={{ width: "16px", height: "16px", backgroundColor: color }} />
+                    <div style={{width: "16px", height: "16px", backgroundColor: color}}/>
                 </Menu.Item>
             ))}
         </Menu>
@@ -154,8 +154,8 @@ export const CategoryCard = ({ category }) => {
         <Card
             key={category.id}
             title={
-                <div style={{ display: "flex", alignItems: "center", color: "white" }}>
-                    <EditOutlined style={{ marginRight: "8px" }} onClick={handleEditClick} />
+                <div style={{display: "flex", alignItems: "center", color: "white"}}>
+                    <EditOutlined style={{marginRight: "8px"}} onClick={handleEditClick}/>
                     Категория:{" "}
                     {isEditing ? (
                         <Input
@@ -170,20 +170,20 @@ export const CategoryCard = ({ category }) => {
                     )}
                 </div>
             }
-            style={{ width: "850px", marginBottom: "16px", backgroundColor: cardColor }}
+            style={{width: "850px", marginBottom: "16px", backgroundColor: cardColor}}
             hoverable
         >
-            <Space style={{ marginBottom: "16px" }}>
+            <Space style={{marginBottom: "16px"}}>
                 <Button
-                    style={{ backgroundColor: "white", color: "#333232" }}
+                    style={{backgroundColor: "white", color: "#333232"}}
                     type="primary"
-                    icon={<PlusOutlined />}
+                    icon={<PlusOutlined/>}
                     onClick={() => handleAddTask(category.id)}
                 >
                     Добавить задачу
                 </Button>
                 <Dropdown overlay={colorMenu} trigger={["click"]}>
-                    <Button style={{ backgroundColor: "white", color: "#333232" }} type="primary">
+                    <Button style={{backgroundColor: "white", color: "#333232"}} type="primary">
                         {<BgColorsOutlined/>}
                     </Button>
                 </Dropdown>
@@ -193,28 +193,28 @@ export const CategoryCard = ({ category }) => {
                     cancelText="Отмена"
                     onConfirm={() => handleDeleteCategory(category.id)}
                 >
-                    <Button type="primary" danger icon={<DeleteOutlined />} />
+                    <Button type="primary" danger icon={<DeleteOutlined/>}/>
                 </Popconfirm>
                 <Button
                     type="primary"
-                    icon={<SortAscendingOutlined />}
+                    icon={<SortAscendingOutlined/>}
                     onClick={handleSortTasksAlphabetically}
                 >
                     Сортировать
                 </Button>
                 <Input
-                    style={{ marginLeft: "24px", width: "370px" }}
+                    style={{marginLeft: "24px", width: "370px"}}
                     placeholder="Поиск задач..."
-                    prefix={<SearchOutlined />}
+                    prefix={<SearchOutlined/>}
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
             </Space>
-            <div style={{ marginTop: "16px" }}>
+            <div style={{marginTop: "16px"}}>
                 <Row gutter={[30, 16]}>
                     {filteredTasks.map((task) => (
                         <Col key={task.id} span={8}>
-                            <TaskCard task={task} onDelete={() => handleDeleteTask(task.id, category.id)} />
+                            <TaskCard task={task} onDelete={() => handleDeleteTask(task.id, category.id)}/>
                         </Col>
                     ))}
                 </Row>

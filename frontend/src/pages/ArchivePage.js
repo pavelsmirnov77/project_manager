@@ -1,7 +1,7 @@
 import MenuBar from "../components/MenuBar";
 
 export const ArchivePage = () => {
-    return(
+    return (
         <div>
             <MenuBar/>
         </div>

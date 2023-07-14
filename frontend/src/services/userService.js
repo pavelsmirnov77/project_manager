@@ -5,7 +5,7 @@ import authHeader from "./authHeader";
 const API_URL = "/users";
 
 const getUser = (id, dispatch) => {
-    return axios.get(API_URL + `/${id}`,{headers: authHeader()}).then(
+    return axios.get(API_URL + `/${id}`, {headers: authHeader()}).then(
         (response) => {
             dispatch(setUser(response.data));
         },
