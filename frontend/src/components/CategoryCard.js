@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Card, Button, Input, Popconfirm, Space, ColorPicker, Row, Col, message} from "antd";
-import {EditOutlined, PlusOutlined, DeleteOutlined} from "@ant-design/icons";
+import {EditOutlined, PlusOutlined, DeleteOutlined, SearchOutlined} from "@ant-design/icons";
 import TaskCard from "./TaskCard";
 import CategoryService from "../services/categoryService";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,8 +11,16 @@ export const CategoryCard = ({category}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [cardColor, setCardColor] = useState("#333232");
     const dispatch = useDispatch();
-    const categories = useSelector((state) => state.categories.categories);
     const tasks = useSelector((state) => state.tasks.tasks);
+    const [searchValue, setSearchValue] = useState("");
+    const [filteredTasks, setFilteredTasks] = useState([]);
+
+    useEffect(() => {
+        const filtered = tasks.filter((task) =>
+            task.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        setFilteredTasks(filtered);
+    }, [tasks, searchValue]);
 
     useEffect(() => {
         taskService.getAllTasks(dispatch);
@@ -31,7 +39,7 @@ export const CategoryCard = ({category}) => {
         const updatedCategory = {...category, name: editedTitle};
         CategoryService.updateCategory(category.id, updatedCategory, dispatch)
             .then(() => {
-                message.success("Имя категории изменено!")
+                message.success("Имя категории изменено!");
                 CategoryService.getCategories(dispatch);
             })
             .catch((error) => {
@@ -53,7 +61,7 @@ export const CategoryCard = ({category}) => {
         const currentUserId = user ? user.id : null;
         if (currentUserId) {
             const newTask = {
-                title: 'Новая задача',
+                title: "Новая задача",
                 completed: false,
                 category_id: categoryId,
             };
@@ -62,7 +70,7 @@ export const CategoryCard = ({category}) => {
                 .createTask(categoryId, newTask, dispatch)
                 .then(() => {
                     message.success("Задача успешно добавлена!");
-                    taskService.getAllTasks(dispatch)
+                    taskService.getAllTasks(dispatch);
                 })
                 .catch((error) => {
                     console.error(error);
@@ -71,15 +79,35 @@ export const CategoryCard = ({category}) => {
         }
     };
 
-
     const handleDeleteCategory = (categoryId) => {
-        CategoryService.deleteCategory(category.id, dispatch)
-            .then(() => {
-                message.success(`Категория "${category.name}" успешно удалена!`)
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        const user = JSON.parse(localStorage.getItem("user"));
+        const currentUserId = user ? user.id : null;
+        if (currentUserId) {
+            CategoryService.deleteCategory(category.id, dispatch)
+                .then(() => {
+                    message.success(`Категория "${category.name}" успешно удалена!`);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    };
+
+    const handleDeleteTask = (taskId, categoryId) => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const currentUserId = user ? user.id : null;
+        if (currentUserId) {
+            taskService
+                .deleteTask(taskId, categoryId, dispatch)
+                .then(() => {
+                    message.success("Задача успешно удалена!");
+                    taskService.getAllTasks(dispatch);
+                })
+                .catch((error) => {
+                    console.error(error);
+                    message.error("Не удалось удалить задачу.");
+                });
+        }
     };
 
     return (
@@ -105,7 +133,7 @@ export const CategoryCard = ({category}) => {
             style={{width: "850px", marginBottom: "16px", backgroundColor: cardColor}}
             hoverable
         >
-            <Space>
+            <Space style={{marginBottom: "16px"}}>
                 <Button
                     style={{backgroundColor: "white", color: "#333232"}}
                     type="primary"
@@ -121,17 +149,23 @@ export const CategoryCard = ({category}) => {
                     cancelText="Отмена"
                     onConfirm={() => handleDeleteCategory(category.id)}
                 >
-                    <Button type="primary" danger icon={<DeleteOutlined/>}/>
+                    <Button type="primary" danger icon={<DeleteOutlined />} />
                 </Popconfirm>
+                <Input
+                    style={{marginLeft: "24px", width: "526px"}}
+                    placeholder="Поиск задач..."
+                    prefix={<SearchOutlined/>}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                />
             </Space>
-            <div style={{ marginTop: "16px" }}>
+            <div style={{marginTop: "16px"}}>
                 <Row gutter={[30, 16]}>
-                    {tasks &&
-                        tasks.map((task) => (
-                            <Col key={task.id} span={8}>
-                                <TaskCard task={task} />
-                            </Col>
-                        ))}
+                    {filteredTasks.map((task) => (
+                        <Col key={task.id} span={8}>
+                            <TaskCard task={task} onDelete={() => handleDeleteTask(task.id, category.id)}/>
+                        </Col>
+                    ))}
                 </Row>
             </div>
         </Card>

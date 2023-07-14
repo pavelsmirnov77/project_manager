@@ -35,7 +35,7 @@ const getAllTasks = (dispatch) => {
 
 const getTasksFromCategory = (category_id, dispatch) => {
     return axios
-        .get(API_URL + `/${category_id}`, { headers: authHeader() })
+        .get(API_URL + `/category/${category_id}`, { headers: authHeader() })
         .then(
             (response) => {
                 dispatch(set(response.data));
@@ -161,7 +161,7 @@ const selectTask = (task, dispatch) => {
 };
 
 const deleteTask = (taskId, category_id, dispatch) => {
-    const url = API_URL + `/${taskId}`;
+    const url = "/trash" + `/${taskId}`;
 
     return axios.delete(url, { headers: authHeader() }).then(
         () => {

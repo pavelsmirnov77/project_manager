@@ -33,17 +33,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public long createTask(Task task, long categoryId) {
-        // Получить категорию по идентификатору
         Optional<Category> optionalCategory = categoryService.findCategoryById(categoryId);
         if (optionalCategory.isPresent()) {
             Category category = optionalCategory.get();
             task.setCategory(category);
         } else {
-            // Обработка ситуации, когда категория не найдена
             throw new RuntimeException("Категория не найдена");
         }
 
-        // Получить значения приоритета, статуса и регулярности из базы данных
         Priority priority = priorityRepository.findById(1L).orElseThrow(() -> new RuntimeException("Приоритет не найден"));
         task.setPriority(priority);
 
@@ -55,10 +52,6 @@ public class TaskServiceImpl implements TaskService {
 
         return taskRepository.save(task).getId();
     }
-
-
-
-
 
     @Override
     public Optional<Task> findTaskById(Long taskId) {
@@ -101,9 +94,23 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public boolean updateTask(Task task) {
-        taskRepository.save(task);
+        if (task.getId() == null) {
+            throw new RuntimeException("Идентификатор задачи не указан");
+        }
+
+        Optional<Task> existingTask = taskRepository.findById(task.getId());
+        if (!existingTask.isPresent()) {
+            throw new RuntimeException("Задача не найдена");
+        }
+
+        Task updatedTask = existingTask.get();
+        updatedTask.setTitle(task.getTitle());
+        updatedTask.setDescription(task.getDescription());
+
+        taskRepository.save(updatedTask);
         return true;
     }
+
 
     @Override
     public boolean addToArchive(long taskId) {

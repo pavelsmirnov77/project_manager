@@ -3,6 +3,8 @@ package ru.sber.backend.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
@@ -15,6 +17,9 @@ public class Category {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

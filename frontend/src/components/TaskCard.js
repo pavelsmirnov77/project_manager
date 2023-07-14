@@ -244,7 +244,7 @@ const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
             style={{
                 width: "250px",
                 marginBottom: "16px",
-                backgroundColor: "#f5f5f5",
+                backgroundColor: isCompleted ? "#C6F6D5" : "#f5f5f5",
                 color: task.archived ? "#bbb" : "inherit",
             }}
             hoverable
