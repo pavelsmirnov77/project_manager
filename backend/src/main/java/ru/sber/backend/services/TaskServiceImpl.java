@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sber.backend.entities.*;
 import ru.sber.backend.exceptions.NotFoundTask;
-import ru.sber.backend.repositories.TaskRepository;
-import ru.sber.backend.repositories.TrashRepository;
+import ru.sber.backend.repositories.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,30 +17,47 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TrashRepository trashRepository;
     private final CategoryService categoryService;
+    private final PriorityRepository priorityRepository;
+    private final RegularityRepository regularityRepository;
+    private final StatusRepository statusRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, CategoryService categoryService) {
+    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, CategoryService categoryService, PriorityRepository priorityRepository, StatusRepository statusRepository, RegularityRepository regularityRepository, StatusRepository statusRepository1) {
         this.taskRepository = taskRepository;
         this.trashRepository = trashRepository;
         this.categoryService = categoryService;
+        this.priorityRepository = priorityRepository;
+        this.regularityRepository = regularityRepository;
+        this.statusRepository = statusRepository1;
     }
 
     @Override
-    public long createTask(Task task) {
-        Priority priority = new Priority();
-        priority.setName(EPriority.LOW);
+    public long createTask(Task task, long categoryId) {
+        // Получить категорию по идентификатору
+        Optional<Category> optionalCategory = categoryService.findCategoryById(categoryId);
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            task.setCategory(category);
+        } else {
+            // Обработка ситуации, когда категория не найдена
+            throw new RuntimeException("Категория не найдена");
+        }
+
+        // Получить значения приоритета, статуса и регулярности из базы данных
+        Priority priority = priorityRepository.findById(1L).orElseThrow(() -> new RuntimeException("Приоритет не найден"));
         task.setPriority(priority);
 
-        Status status = new Status();
-        status.setName(EStatus.IN_PROGRESS);
+        Status status = statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Статус не найден"));
         task.setStatus(status);
 
-        Regularity regularity = new Regularity();
-        regularity.setName(ERegularity.IRREGULAR);
+        Regularity regularity = regularityRepository.findById(1L).orElseThrow(() -> new RuntimeException("Регулярность не найдена"));
         task.setRegularity(regularity);
 
         return taskRepository.save(task).getId();
     }
+
+
+
 
 
     @Override

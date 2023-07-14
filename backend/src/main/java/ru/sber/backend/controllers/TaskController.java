@@ -36,11 +36,11 @@ public class TaskController {
      * @return созданная задача
      */
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestBody Task task) {
-        long taskId = taskService.createTask(task);
+    public ResponseEntity<?> createTask(@RequestParam("categoryId") long categoryId, @RequestBody Task task) {
+        long taskId = taskService.createTask(task, categoryId);
         log.info("Добавление задачи с id: {}", taskId);
 
-        return ResponseEntity.created(URI.create("todo/tasks/" + taskId)).build();
+        return ResponseEntity.created(URI.create("/todo/tasks/" + taskId)).build();
     }
 
     /**

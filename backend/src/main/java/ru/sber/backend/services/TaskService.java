@@ -12,7 +12,7 @@ public interface TaskService {
      * @param task создаваемая задача
      * @return id созданной задачи
      */
-    long createTask(Task task);
+    long createTask(Task task, long categoryId);
 
     /**
      * Ищет задачу по  id

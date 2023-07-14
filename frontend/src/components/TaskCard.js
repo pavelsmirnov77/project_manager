@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     Button,
@@ -9,21 +9,22 @@ import {
     Menu,
     DatePicker,
     TimePicker,
-    message
+    message,
 } from "antd";
 import {
     EditOutlined,
     DeleteOutlined,
     InboxOutlined,
     BellOutlined,
-    CalendarOutlined, ExclamationOutlined,
+    CalendarOutlined,
+    ExclamationOutlined,
 } from "@ant-design/icons";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import taskService from "../services/taskService";
 
-const {RangePicker} = TimePicker;
+const { RangePicker } = TimePicker;
 
-const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => {
+const TaskCard = ({ task, handleArchiveTask, selectedTask }) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
     const [editedDescription, setEditedDescription] = useState(task.description);
@@ -32,9 +33,9 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
     const [showPriorityMenu, setShowPriorityMenu] = useState(false);
     const [notificationDate, setNotificationDate] = useState(null);
     const [notificationTime, setNotificationTime] = useState(null);
-    const [selectedRegularity, setSelectedRegularity] = useState("не выставлена");
+    const [selectedRegularity, setSelectedRegularity] = useState("IRREGULAR");
     const [selectedReminder] = useState("не выставлено");
-    const [selectedPriority, setSelectedPriority] = useState("не выставлен");
+    const [selectedPriority, setSelectedPriority] = useState("LOW");
     const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
     const [isCompleted, setIsCompleted] = useState(task.completed);
     const dispatch = useDispatch();
@@ -43,9 +44,9 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
     const priorities = useSelector((state) => state.tasks.priorities);
 
     useEffect(() => {
-        taskService.getStatuses(dispatch)
-        taskService.getPriorities(dispatch)
-        taskService.getRegularities(dispatch)
+        taskService.getStatuses(dispatch);
+        taskService.getPriorities(dispatch);
+        taskService.getRegularities(dispatch);
     }, [selectedTask]);
 
     const handleTaskTitleEdit = (e) => {
@@ -58,8 +59,7 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
 
     const handleDescriptionSave = () => {
         setIsDescriptionEditing(false);
-        // Вызов функции для обновления описания задачи в базе данных
-        // Например: taskService.updateTaskDescription(task.id, editedDescription);
+        updateTaskDescription(task.id, editedDescription);
     };
 
     const handleEditClick = () => {
@@ -69,7 +69,7 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
     const handleTitleSave = () => {
         if (editedTitle.trim() !== "") {
             setIsEditing(false);
-            handleEditTask(task.id, editedTitle);
+            updateTaskTitle(task.id, editedTitle);
         }
     };
 
@@ -80,6 +80,19 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
 
     const handleArchiveClick = () => {
         handleArchiveTask(task.id);
+    };
+
+    const handleDeleteTask = (taskId) => {
+        const category_id = task.category_id;
+        taskService
+            .deleteTask(taskId, category_id, dispatch)
+            .then(() => {
+                message.success("Задача успешно удалена!");
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Не удалось удалить задачу.");
+            });
     };
 
     const handleDeleteClick = () => {
@@ -103,7 +116,7 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
 
     const handlePriorityClick = () => {
         setShowPriorityMenu(!showPriorityMenu);
-    }
+    };
 
     const handleNotificationDateChange = (date, dateString) => {
         setNotificationDate(dateString);
@@ -114,8 +127,7 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
     };
 
     const handleNotificationSave = () => {
-        console.log("Notification Date:", notificationDate);
-        console.log("Notification Time:", notificationTime);
+        saveTaskNotification(task.id, notificationDate, notificationTime);
     };
 
     const handleNotificationCancel = () => {
@@ -132,8 +144,47 @@ const TaskCard = ({task, handleDeleteTask, handleArchiveTask, selectedTask}) => 
         setSelectedPriority(e.item.props.children);
     };
 
-    const handleEditTask = (taskId, editedTitle) => {
-        console.log("handleEditTask:", taskId, editedTitle);
+    const updateTaskTitle = (taskId, editedTitle) => {
+        const updatedTask = { ...task, title: editedTitle };
+        taskService
+            .updateTask(task.category_id, updatedTask, dispatch)
+            .then(() => {
+                message.success("Заголовок задачи обновлен!");
+                taskService.getAllTasks(dispatch);
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Не удалось обновить заголовок задачи.");
+            });
+    };
+
+    const updateTaskDescription = (taskId, editedDescription) => {
+        const updatedTask = { ...task, description: editedDescription };
+        taskService
+            .updateTask(task.category_id, updatedTask, dispatch)
+            .then(() => {
+                message.success("Описание задачи обновлено!");
+                taskService.getAllTasks(dispatch);
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Не удалось обновить описание задачи.");
+            });
+    };
+
+    const saveTaskNotification = (taskId, date, time) => {
+        const notificationDateTime = date && time ? `${date} ${time}` : null;
+        const updatedTask = { ...task, notification: notificationDateTime };
+        taskService
+            .updateTask(task.category_id, updatedTask, dispatch)
+            .then(() => {
+                message.success("Уведомление задачи сохранено!");
+                taskService.getAllTasks(dispatch);
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Не удалось сохранить уведомление задачи.");
+            });
     };
 
     const menuRegularity = (

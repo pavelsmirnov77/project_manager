@@ -10,9 +10,9 @@ export const CategoryCard = ({category}) => {
     const [editedTitle, setEditedTitle] = useState(category.name);
     const [isEditing, setIsEditing] = useState(false);
     const [cardColor, setCardColor] = useState("#333232");
-    const [tasks, setTasks] = useState([]);
     const dispatch = useDispatch();
     const categories = useSelector((state) => state.categories.categories);
+    const tasks = useSelector((state) => state.tasks.tasks);
 
     useEffect(() => {
         taskService.getAllTasks(dispatch);
@@ -49,13 +49,28 @@ export const CategoryCard = ({category}) => {
     };
 
     const handleAddTask = (categoryId) => {
-        const newTask = {
-            id: tasks.length + 1,
-            title: `Новая задача ${tasks.length + 1}`,
-            completed: false,
-        };
-        setTasks([...tasks, newTask]);
+        const user = JSON.parse(localStorage.getItem("user"));
+        const currentUserId = user ? user.id : null;
+        if (currentUserId) {
+            const newTask = {
+                title: 'Новая задача',
+                completed: false,
+                category_id: categoryId,
+            };
+
+            taskService
+                .createTask(categoryId, newTask, dispatch)
+                .then(() => {
+                    message.success("Задача успешно добавлена!");
+                    taskService.getAllTasks(dispatch)
+                })
+                .catch((error) => {
+                    console.error(error);
+                    message.error("Не удалось добавить задачу.");
+                });
+        }
     };
+
 
     const handleDeleteCategory = (categoryId) => {
         CategoryService.deleteCategory(category.id, dispatch)
@@ -109,13 +124,14 @@ export const CategoryCard = ({category}) => {
                     <Button type="primary" danger icon={<DeleteOutlined/>}/>
                 </Popconfirm>
             </Space>
-            <div style={{marginTop: "16px"}}>
+            <div style={{ marginTop: "16px" }}>
                 <Row gutter={[30, 16]}>
-                    {tasks.map((task) => (
-                        <Col key={task.id} xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <TaskCard task={task}/>
-                        </Col>
-                    ))}
+                    {tasks &&
+                        tasks.map((task) => (
+                            <Col key={task.id} span={8}>
+                                <TaskCard task={task} />
+                            </Col>
+                        ))}
                 </Row>
             </div>
         </Card>

@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.sber.backend.entities.Priority;
 
 @Repository
-public interface PrioriryRepository extends JpaRepository<Priority, Long> {
+public interface PriorityRepository extends JpaRepository<Priority, Long> {
 }

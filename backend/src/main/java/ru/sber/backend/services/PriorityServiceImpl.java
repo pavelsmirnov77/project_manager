@@ -3,21 +3,21 @@ package ru.sber.backend.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sber.backend.entities.Priority;
-import ru.sber.backend.repositories.PrioriryRepository;
+import ru.sber.backend.repositories.PriorityRepository;
 
 import java.util.List;
 
 @Service
 public class PriorityServiceImpl implements PriorityService {
-    private final PrioriryRepository prioriryRepository;
+    private final PriorityRepository priorityRepository;
 
     @Autowired
-    public PriorityServiceImpl(PrioriryRepository prioriryRepository) {
-        this.prioriryRepository = prioriryRepository;
+    public PriorityServiceImpl(PriorityRepository priorityRepository) {
+        this.priorityRepository = priorityRepository;
     }
 
     @Override
     public List<Priority> findAllPrioriry() {
-        return prioriryRepository.findAll();
+        return priorityRepository.findAll();
     }
 }
