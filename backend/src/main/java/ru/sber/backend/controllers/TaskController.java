@@ -71,6 +71,11 @@ public class TaskController {
         return taskService.findAllTasks();
     }
 
+    @GetMapping("/{categoryId}")
+    public List<Task> findAllTasksByCategoryId(@PathVariable long categoryId) {
+        return taskService.findAllTasksByCategoryId(categoryId);
+    }
+
     /**
      * Обновляет информацию у задачи
      *

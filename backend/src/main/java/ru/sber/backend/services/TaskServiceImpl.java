@@ -111,7 +111,6 @@ public class TaskServiceImpl implements TaskService {
         return true;
     }
 
-
     @Override
     public boolean addToArchive(long taskId) {
         Optional<Task> optionalTask = taskRepository.findById(taskId);

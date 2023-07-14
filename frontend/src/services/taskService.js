@@ -7,13 +7,13 @@ import {
     setStatuses,
 } from "../slices/taskSlice";
 import authHeader from "./authHeader";
-import { setAllCategories } from "../slices/categorySlice";
+import {setAllCategories} from "../slices/categorySlice";
 
 const API_URL = "/todo/tasks";
 
 const getAllTasks = (dispatch) => {
     return axios
-        .get(API_URL, { headers: authHeader() })
+        .get(API_URL, {headers: authHeader()})
         .then(
             (response) => {
                 dispatch(set(response.data));
@@ -35,7 +35,7 @@ const getAllTasks = (dispatch) => {
 
 const getTasksFromCategory = (category_id, dispatch) => {
     return axios
-        .get(API_URL + `/category/${category_id}`, { headers: authHeader() })
+        .get(API_URL + `/${category_id}`, {headers: authHeader()})
         .then(
             (response) => {
                 dispatch(set(response.data));
@@ -54,9 +54,11 @@ const getTasksFromCategory = (category_id, dispatch) => {
         );
 };
 
+
+
 const getStatuses = (dispatch) => {
     return axios
-        .get(API_URL + "/statuses", { headers: authHeader() })
+        .get(API_URL + "/statuses", {headers: authHeader()})
         .then(
             (response) => {
                 dispatch(setStatuses(response.data));
@@ -77,7 +79,7 @@ const getStatuses = (dispatch) => {
 
 const getRegularities = (dispatch) => {
     return axios
-        .get(API_URL + "/regularities", { headers: authHeader() })
+        .get(API_URL + "/regularities", {headers: authHeader()})
         .then(
             (response) => {
                 dispatch(setRegularities(response.data));
@@ -102,7 +104,7 @@ const getPriorities = (dispatch) => {
 
     if (token) {
         return axios
-            .get(API_URL + "/priorities", { headers: authHeader() })
+            .get(API_URL + "/priorities", {headers: authHeader()})
             .then(
                 (response) => {
                     dispatch(setPriorities(response.data));
@@ -125,7 +127,7 @@ const getPriorities = (dispatch) => {
 const createTask = (category_id, task, dispatch) => {
     const url = `/todo/tasks?categoryId=${category_id}`;
 
-    return axios.post(url, task, { headers: authHeader() }).then(
+    return axios.post(url, task, {headers: authHeader()}).then(
         () => {
             return getTasksFromCategory(category_id, dispatch);
         },
@@ -141,7 +143,7 @@ const createTask = (category_id, task, dispatch) => {
 };
 
 const updateTask = (category_id, task, dispatch) => {
-    return axios.put(API_URL, task, { headers: authHeader() }).then(
+    return axios.put(API_URL, task, {headers: authHeader()}).then(
         () => {
             getTasksFromCategory(category_id, dispatch);
         },
@@ -163,7 +165,7 @@ const selectTask = (task, dispatch) => {
 const deleteTask = (taskId, category_id, dispatch) => {
     const url = "/trash" + `/${taskId}`;
 
-    return axios.delete(url, { headers: authHeader() }).then(
+    return axios.delete(url, {headers: authHeader()}).then(
         () => {
             return getTasksFromCategory(category_id, dispatch);
         },
@@ -177,7 +179,6 @@ const deleteTask = (taskId, category_id, dispatch) => {
         }
     );
 };
-
 
 const taskService = {
     getAllTasks,

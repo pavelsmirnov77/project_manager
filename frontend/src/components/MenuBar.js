@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Layout, Menu, Input, Button, Avatar, Tooltip} from 'antd';
 import {
     MenuOutlined,
-    SearchOutlined,
     UserOutlined,
     FileOutlined,
     DeleteOutlined,
@@ -14,14 +13,9 @@ import {Link, useLocation} from 'react-router-dom';
 const {Header, Content, Sider} = Layout;
 
 const MenuBar = () => {
-    const [searchValue, setSearchValue] = useState('');
     const [collapsed, setCollapsed] = useState(true);
     const location = useLocation();
     const user = JSON.parse(localStorage.getItem("user"));
-
-    const handleSearch = (value) => {
-        setSearchValue(value);
-    };
 
     const toggleSidebar = () => {
         setCollapsed(!collapsed);
@@ -57,13 +51,6 @@ const MenuBar = () => {
                     <h1 style={{color: '#fff', margin: 0}}>TODO-List</h1>
                 </div>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <Input
-                        style={{width: '500px', marginRight: '16px'}}
-                        placeholder="Поиск задач..."
-                        prefix={<SearchOutlined/>}
-                        value={searchValue}
-                        onChange={(e) => handleSearch(e.target.value)}
-                    />
                     <Link to="/users/profile">
                         <Tooltip title="Профиль пользователя" placement="bottom">
                             <span style={{marginLeft: '15px', marginRight: '10px', color: '#fff', fontSize: '18px', fontWeight: 'bold'}}>
