@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.backend.entities.*;
 import ru.sber.backend.services.PriorityService;
-import ru.sber.backend.services.RegularityService;
 import ru.sber.backend.services.StatusService;
 import ru.sber.backend.services.TaskService;
 
@@ -20,13 +19,11 @@ public class TaskController {
     private final TaskService taskService;
     private final StatusService statusService;
     private final PriorityService priorityService;
-    private final RegularityService regularityService;
 
-    public TaskController(TaskService taskService, StatusService statusService, PriorityService priorityService, RegularityService regularityService) {
+    public TaskController(TaskService taskService, StatusService statusService, PriorityService priorityService) {
         this.taskService = taskService;
         this.statusService = statusService;
         this.priorityService = priorityService;
-        this.regularityService = regularityService;
     }
 
     /**
@@ -71,9 +68,9 @@ public class TaskController {
         return taskService.findAllTasks();
     }
 
-    @GetMapping("/{categoryId}")
-    public List<Task> findAllTasksByCategoryId(@PathVariable long categoryId) {
-        return taskService.findAllTasksByCategoryId(categoryId);
+    @GetMapping("/project/{projectId}")
+    public List<Task> findAllTasksByProjectId(@PathVariable long projectId) {
+        return taskService.findAllTasksByProjectId(projectId);
     }
 
     /**
@@ -87,37 +84,6 @@ public class TaskController {
         taskService.updateTask(task);
         log.info("Обновление информации о задаче");
         return ResponseEntity.ok().body(task);
-    }
-
-    /**
-     * Добавляет задачу в архив
-     *
-     * @param taskId id задачи
-     * @return ответ об удачном или неудачном добавлении в архив
-     */
-    @PutMapping("/archive/{taskId}")
-    public ResponseEntity<String> addToArchive(@PathVariable("taskId") long taskId) {
-        log.info("Добавление задачи с id: {} в архив", taskId);
-        boolean addedToArchive = taskService.addToArchive(taskId);
-        if (addedToArchive) {
-            return ResponseEntity.ok("Задача добавлена в архив");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Изменяет регулярность задачи
-     *
-     * @param taskId id задачи
-     * @param regularity регулярность
-     * @return ответ об удачном изменении регулярности
-     */
-    @PutMapping("/regularity/{taskId}")
-    public ResponseEntity<Task> changeTaskRegularity(@PathVariable Long taskId, @RequestBody Regularity regularity) {
-        log.info("Изменение регулярности задачи с id: {}", taskId);
-        Task updatedTask = taskService.changeTaskRegularity(taskId, regularity);
-        return ResponseEntity.ok(updatedTask);
     }
 
     /**
@@ -154,14 +120,28 @@ public class TaskController {
         return priorityService.findAllPrioriry();
     }
 
+    @GetMapping("/status/{statusId}")
+    public List<Task> findAllTasksByStatusId(@PathVariable Long statusId) {
+        log.info("Получение всех задач по статусу с id: {}", statusId);
+        return taskService.findTasksByStatuses(statusId);
+    }
+
     /**
-     * Получает список регулярность задач
+     * Обновляет статус задачи
      *
-     * @return список регулярность задач
+     * @param taskId  id задачи
+     * @param statusId id нового статуса
+     * @return ответ об успешном обновлении статуса задачи
      */
-    @GetMapping("/regularities")
-    public List<Regularity> getRegularities() {
-        log.info("Получение регулярности");
-        return regularityService.findAllRegularity();
+    @PutMapping("/{taskId}/status/{statusId}")
+    public ResponseEntity<String> updateTaskStatus(@PathVariable("taskId") long taskId,
+                                                   @PathVariable("statusId") long statusId) {
+        log.info("Обновление статуса задачи с id: {} на статус с id: {}", taskId, statusId);
+        boolean updated = taskService.updateTaskStatus(taskId, statusId);
+        if (updated) {
+            return ResponseEntity.ok("Статус задачи обновлен");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

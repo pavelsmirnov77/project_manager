@@ -1,12 +1,12 @@
 import axios from "axios";
-import {setAllCategories, setSelectedCategory} from "../slices/categorySlice";
+import {setAllProjects, setSelectedProject} from "../slices/projectSlice";
 import authHeader from "./authHeader";
 
 const API_URL = "/todo/note";
 
-const getCategories = (dispatch) => {
+const getProjects = (dispatch) => {
     return axios.get(API_URL, {headers: authHeader()}).then((response) => {
-            dispatch(setAllCategories(response.data))
+            dispatch(setAllProjects(response.data))
             return response.data;
         },
         (error) => {
@@ -16,23 +16,23 @@ const getCategories = (dispatch) => {
 
             console.error(_content)
 
-            dispatch(setAllCategories([]));
+            dispatch(setAllProjects([]));
         });
 };
 
-export const createCategory = (category, dispatch) => {
+export const createProject = (project, dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user ? user.accessToken : null;
     if (token) {
         return axios
-            .post(API_URL, category, {
+            .post(API_URL, project, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then(
                 (response) => {
-                    getCategories(dispatch);
+                    getProjects(dispatch);
                 })
             .catch((error) => {
                 const _content =
@@ -45,20 +45,20 @@ export const createCategory = (category, dispatch) => {
     }
 };
 
-export const updateCategory = (id, category, dispatch) => {
+export const updateProject = (id, project, dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user ? user.accessToken : null;
 
     if (token) {
         return axios
-            .put(API_URL + `/${id}`, category, {
+            .put(API_URL + `/${id}`, project, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then(
                 (response) => {
-                    getCategories(dispatch);
+                    getProjects(dispatch);
                 }
             )
             .catch((error) => {
@@ -72,12 +72,12 @@ export const updateCategory = (id, category, dispatch) => {
     }
 };
 
-export const deleteCategory = (id, dispatch) => {
+export const deleteProject = (id, dispatch) => {
     return axios
         .delete(API_URL + `/${id}`, {headers: authHeader()})
         .then(
             (response) => {
-                getCategories(dispatch);
+                getProjects(dispatch);
             },
             (error) => {
                 const _content = (error.response && error.response.data) ||
@@ -89,18 +89,18 @@ export const deleteCategory = (id, dispatch) => {
         );
 };
 
-const selectCategory = (category, dispatch) => {
-    localStorage.removeItem("selected_category");
-    localStorage.setItem("selected_category", JSON.stringify(category));
-    dispatch(setSelectedCategory(category));
+const selectProject = (project, dispatch) => {
+    localStorage.removeItem("selected_project");
+    localStorage.setItem("selected_project", JSON.stringify(project));
+    dispatch(setSelectedProject(project));
 };
 
-const categoryService = {
-    getCategories,
-    createCategory,
-    updateCategory,
-    deleteCategory,
-    selectCategory,
+const projectService = {
+    getProjects,
+    createProject,
+    updateProject,
+    deleteProject,
+    selectProject,
 };
 
-export default categoryService;
+export default projectService;

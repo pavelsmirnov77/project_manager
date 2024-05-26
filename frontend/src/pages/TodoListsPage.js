@@ -1,175 +1,109 @@
 import React, {useEffect, useState} from "react";
-import {motion, AnimatePresence} from "framer-motion";
 import MenuBar from "../components/MenuBar";
-import {DatePicker, Input, Button, Form, Empty, message} from "antd";
+import {Input, Button, Form, Empty, message} from "antd";
 import {
     PlusOutlined,
-    CloseOutlined, AppstoreAddOutlined,
+    AppstoreAddOutlined,
 } from "@ant-design/icons";
-import ruRU from "antd/es/date-picker/locale/ru_RU";
 import moment from "moment";
 import "moment/locale/ru";
 import taskService from "../services/taskService";
-import CategoryCard from "../components/CategoryCard";
-import CategoryService from "../services/categoryService";
+import ProjectCard from "../components/ProjectCard";
+import ProjectService from "../services/projectService";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate, useParams} from "react-router-dom";
-import categoryService from "../services/categoryService";
-import Clock from "../components/Clock";
-import Calendar from "../components/Calendar";
+import {useParams} from "react-router-dom";
 
 moment.locale("ru");
 
-const inputVariants = {
-    open: {width: "850px", opacity: 1, display: "flex"},
-    closed: {width: "0", opacity: 0, display: "none"},
-};
-
 export const TodoListsPage = () => {
     const {id} = useParams();
-    const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-    const [showCategoryInput, setShowCategoryInput] = useState(false);
-    const [categoryName, setCategoryName] = useState("");
-    const [setCategories] = useState([]);
+    const [projectName, setProjectName] = useState("");
     const dispatch = useDispatch();
-    const categories = useSelector((state) => state.categories.categories);
+    const projects = useSelector((state) => state.projects.projects);
     const [form] = Form.useForm();
-    const selectedCategory = useSelector((state) => state.categories.selectedCategory);
-    const categoriesIds = categories.map((category) => category.id);
+    const selectedProject = useSelector((state) => state.projects.selectedProject);
+    const projectsIds = projects.map((project) => project.id);
 
     useEffect(() => {
-        if (selectedCategory && categoriesIds.includes(selectedCategory.id)) {
-            taskService.getTasksFromCategory(id, dispatch);
+        if (selectedProject && projectsIds.includes(selectedProject.id)) {
+            taskService.getTasksFromProjects(id, dispatch);
         }
-    }, [selectedCategory]);
+    }, [selectedProject]);
 
-
-    const handleDatePickerOpenChange = (open) => {
-        setIsDatePickerOpen(open);
+    const handleProjectInputChange = (e) => {
+        setProjectName(e.target.value);
     };
 
-    const handleCategoryInputChange = (e) => {
-        setCategoryName(e.target.value);
-    };
-
-    const handleCategoryInputToggle = () => {
-        setShowCategoryInput(!showCategoryInput);
-    };
-
-    const handleCategoryInputClose = () => {
-        setCategoryName("");
-        setShowCategoryInput(false);
-    };
-
-    const setCategory = (id) => {
-        categoryService.selectCategory(id, dispatch)
+    const setProject = (id) => {
+        ProjectService.selectProject(id, dispatch)
     }
 
-    const handleCreateCategory = () => {
+    const handleCreateProject = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const currentUserId = user ? user.id : null;
         if (currentUserId) {
-            const newCategory = {
-                name: categoryName,
-                id: categories.length + 1,
+            const newProject = {
+                name: projectName,
+                id: projects.length + 1,
                 user: {id: currentUserId}
             };
-            CategoryService.createCategory(newCategory, dispatch).then(() => {
-                message.success(`Категория "${newCategory.name}" успешно создана!`)
-                CategoryService.getCategories(dispatch);
+            ProjectService.createProject(newProject, dispatch).then(() => {
+                message.success(`Проект "${newProject.name}" успешно создан!`)
+                ProjectService.getProjects(dispatch);
             })
         }
     };
 
     useEffect(() => {
-        categoryService.getCategories(dispatch)
+        ProjectService.getProjects(dispatch)
     }, []);
 
-    const handleEditCategory = (categoryId, newTitle) => {
-        const updatedCategories = categories.map((category) => {
-            if (category.id === categoryId) {
-                return {...category, title: newTitle};
+    const handleEditProject = (projectId, newTitle) => {
+        const updatedProjects = projects.map((project) => {
+            if (project.id === projectId) {
+                return {...project, title: newTitle};
             }
-            return category;
+            return project;
         });
-        setCategory(updatedCategories);
+        setProject(updatedProjects);
     };
 
-    const handleAddTask = (categoryId) => {
-        console.log("Добавление задачи в категорию:", categoryId);
+    const handleAddTask = (projectId) => {
+        console.log("Добавление задачи в проект:", projectId);
     };
 
     return (
-        <Form form={form} onFinish={handleCreateCategory}>
+        <Form form={form}>
             <div>
                 <MenuBar/>
-                <div style={{position: "absolute", top: "80px", right: "16px"}}>
-                    <Clock/>
-                    <Calendar/>
-                </div>
                 <div
                     style={{
-                        position: "absolute",
-                        top: "120px",
-                        left: "50%",
-                        transform: "translateX(-50%)",
+                        top: "200px",
                     }}
                 >
-                    <AnimatePresence>
-                        {showCategoryInput && (
-                            <motion.div
-                                initial="closed"
-                                animate="open"
-                                exit="closed"
-                                variants={inputVariants}
-                                transition={{duration: 0.3}}
-                                style={{
-                                    alignItems: "center",
-                                    marginBottom: "32px",
-                                    width: "800px",
-                                }}
-                            >
-                                <Input
-                                    style={{flex: 1, marginRight: "8px"}}
-                                    placeholder="Введите название категории"
-                                    value={categoryName}
-                                    onChange={handleCategoryInputChange}
-                                />
-                                <Button
-                                    type="primary"
-                                    icon={<PlusOutlined/>}
-                                    style={{
-                                        flex: 0,
-                                        paddingRight: "6px",
-                                        paddingLeft: "6px",
-                                        backgroundColor: "#333232",
-                                    }}
-                                    htmlType="submit"
-                                />
-                                <Button
-                                    style={{
-                                        marginLeft: "8px",
-                                        flex: 0,
-                                        paddingRight: "6px",
-                                        paddingLeft: "6px"
-                                    }}
-                                    icon={<CloseOutlined/>}
-                                    onClick={handleCategoryInputClose}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                    <div style={{textAlign: "center"}}>
-                        {!showCategoryInput && (
-                            <Button
-                                type="dashed"
-                                icon={<PlusOutlined/>}
-                                onClick={handleCategoryInputToggle}
-                                style={{display: showCategoryInput ? "none" : "inline-block"}}
-                            />
-                        )}
+                    <div style={{
+                        marginLeft: "650px",
+                    }}>
+                        <Input
+                            style={{marginRight: "8px", width: "850px"}}
+                            placeholder="Введите название проекта"
+                            value={projectName}
+                            onChange={handleProjectInputChange}
+                        />
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined/>}
+                            onClick={handleCreateProject}
+                            style={{
+                                backgroundColor: "#333232",
+                                borderColor: "#333232",
+                                color: "white",
+                            }}
+                            htmlType="submit"
+                        />
                     </div>
-                    {categories.length === 0 ? (
+
+                    {projects.length === 0 ? (
                         <Empty style={{marginTop: "150px"}}
                                image={<AppstoreAddOutlined style={{fontSize: 64, color: "rgba(0, 0, 0, 0.5)"}}/>}
                                description={<span
@@ -177,11 +111,11 @@ export const TodoListsPage = () => {
                         />
                     ) : (
                         <div style={{marginTop: "30px"}}>
-                            {categories.map((category) => (
-                                <CategoryCard
-                                    key={category.id}
-                                    category={category}
-                                    handleEditCategory={handleEditCategory}
+                            {projects.map((project) => (
+                                <ProjectCard
+                                    key={project.id}
+                                    project={project}
+                                    handleEditProject={handleEditProject}
                                     handleAddTask={handleAddTask}
                                 />
                             ))}

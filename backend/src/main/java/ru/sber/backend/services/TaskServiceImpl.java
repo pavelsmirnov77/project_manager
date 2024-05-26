@@ -1,5 +1,6 @@
 package ru.sber.backend.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sber.backend.entities.*;
@@ -12,31 +13,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final TrashRepository trashRepository;
-    private final CategoryService categoryService;
+    private final ProjectService projectService;
     private final PriorityRepository priorityRepository;
-    private final RegularityRepository regularityRepository;
     private final StatusRepository statusRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, CategoryService categoryService, PriorityRepository priorityRepository, StatusRepository statusRepository, RegularityRepository regularityRepository, StatusRepository statusRepository1) {
+    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, ProjectService projectService, PriorityRepository priorityRepository, StatusRepository statusRepository, StatusRepository statusRepository1) {
         this.taskRepository = taskRepository;
         this.trashRepository = trashRepository;
-        this.categoryService = categoryService;
+        this.projectService = projectService;
         this.priorityRepository = priorityRepository;
-        this.regularityRepository = regularityRepository;
         this.statusRepository = statusRepository1;
     }
 
     @Override
     public long createTask(Task task, long categoryId) {
-        Optional<Category> optionalCategory = categoryService.findCategoryById(categoryId);
+        Optional<Project> optionalCategory = projectService.findProjectById(categoryId);
         if (optionalCategory.isPresent()) {
-            Category category = optionalCategory.get();
-            task.setCategory(category);
+            Project project = optionalCategory.get();
+            task.setProject(project);
         } else {
             throw new RuntimeException("Категория не найдена");
         }
@@ -46,9 +46,6 @@ public class TaskServiceImpl implements TaskService {
 
         Status status = statusRepository.findById(1L).orElseThrow(() -> new RuntimeException("Статус не найден"));
         task.setStatus(status);
-
-        Regularity regularity = regularityRepository.findById(1L).orElseThrow(() -> new RuntimeException("Регулярность не найдена"));
-        task.setRegularity(regularity);
 
         return taskRepository.save(task).getId();
     }
@@ -60,36 +57,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findAllTasks() {
-        List<Category> categories = categoryService.findAllCategories();
+        List<Project> categories = projectService.findAllProjects();
         List<Task> allTasks = new ArrayList<>();
-        for (Category category : categories) {
-            List<Task> tasksByCategory = findAllTasksByCategoryId(category.getId());
+        for (Project project : categories) {
+            List<Task> tasksByCategory = findAllTasksByProjectId(project.getId());
             allTasks.addAll(tasksByCategory);
         }
         return allTasks;
     }
 
     @Override
-    public List<Task> findAllTasksByName(String titleTask) {
-        return taskRepository.findAllByTitleContainingIgnoreCase(titleTask);
-    }
-
-    @Override
-    public List<Task> findAllTaskNotArchived(String title) {
-        return taskRepository.findAllByTitleAndArchivedFalse(title);
-    }
-
-    @Override
-    public List<Task> findAllTasksByCategoryId(long categoryId) {
+    public List<Task> findAllTasksByProjectId(long categoryId) {
         return taskRepository.findAll()
                 .stream()
-                .filter(task -> task.getCategory().getId() == categoryId)
+                .filter(task -> task.getProject().getId() == categoryId)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Task> findAllTaskArchived(String title) {
-        return taskRepository.findAllByTitleAndArchivedTrue(title);
     }
 
     @Override
@@ -109,28 +91,6 @@ public class TaskServiceImpl implements TaskService {
 
         taskRepository.save(updatedTask);
         return true;
-    }
-
-    @Override
-    public boolean addToArchive(long taskId) {
-        Optional<Task> optionalTask = taskRepository.findById(taskId);
-        if (optionalTask.isPresent()) {
-            Task task = optionalTask.get();
-            task.setArchived(true);
-            taskRepository.save(task);
-            return true;
-        }
-        else throw new NotFoundTask("Задача не найдена");
-    }
-
-    public Task changeTaskRegularity(long taskId, Regularity regularity) {
-        Optional<Task> optionalTask = taskRepository.findById(taskId);
-        if (optionalTask.isPresent()) {
-            Task task = optionalTask.get();
-            task.setRegularity(regularity);
-            return taskRepository.save(task);
-        }
-        else throw new NotFoundTask("Задача не найдена");
     }
 
     @Override
@@ -156,6 +116,31 @@ public class TaskServiceImpl implements TaskService {
             taskRepository.delete(task);
             return true;
         } else {
+            return false;
+        }
+    }
+
+    @Override
+    public List<Task> findTasksByStatuses(Long statusIds) {
+        return taskRepository.findTasksByStatusId(statusIds);
+    }
+
+    @Override
+    public boolean updateTaskStatus(long taskId, long statusId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            Optional<Status> optionalStatus = statusRepository.findById(statusId);
+            if (optionalStatus.isPresent()) {
+                task.setStatus(optionalStatus.get());
+                taskRepository.save(task);
+                return true;
+            } else {
+                log.error("Статус с id {} не найден", statusId);
+                return false;
+            }
+        } else {
+            log.error("Задача с id {} не найдена", taskId);
             return false;
         }
     }

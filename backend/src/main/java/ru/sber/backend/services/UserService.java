@@ -19,5 +19,5 @@ public interface UserService {
      * @param userId id пользователя
      * @return найденный пользователь
      */
-    Optional<User> getUserById(long userId);
+    Optional<User> getUserById(Long userId);
 }

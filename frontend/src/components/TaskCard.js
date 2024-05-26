@@ -21,33 +21,49 @@ import {
 } from "@ant-design/icons";
 import {useDispatch, useSelector} from "react-redux";
 import taskService from "../services/taskService";
+import {Link} from "react-router-dom";
 
 const {RangePicker} = TimePicker;
 
-const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
+const TaskCard = ({task, handleArchiveTask, selectedTask, dispatch}) => {
     const [editedTitle, setEditedTitle] = useState(task.title);
     const [isEditing, setIsEditing] = useState(false);
     const [editedDescription, setEditedDescription] = useState(task.description);
     const [showNotificationForm, setShowNotificationForm] = useState(false);
-    const [showRegularityMenu, setShowRegularityMenu] = useState(false);
     const [showPriorityMenu, setShowPriorityMenu] = useState(false);
     const [notificationDate, setNotificationDate] = useState(null);
     const [notificationTime, setNotificationTime] = useState(null);
-    const [selectedRegularity, setSelectedRegularity] = useState("IRREGULAR");
     const [selectedReminder] = useState("не выставлено");
     const [selectedPriority, setSelectedPriority] = useState("LOW");
     const [isDescriptionEditing, setIsDescriptionEditing] = useState(false);
     const [isCompleted, setIsCompleted] = useState(task.completed);
-    const dispatch = useDispatch();
     const statuses = useSelector((state) => state.tasks.statuses);
-    const regularities = useSelector((state) => state.tasks.regularities);
     const priorities = useSelector((state) => state.tasks.priorities);
+    const [selectedStatus, setSelectedStatus] = useState(task.status);
 
     useEffect(() => {
         taskService.getStatuses(dispatch);
         taskService.getPriorities(dispatch);
-        taskService.getRegularities(dispatch);
     }, [selectedTask]);
+
+    useEffect(() => {
+        taskService.getAllTasks(dispatch);
+    }, []);
+
+    const handleStatusChange = (status) => {
+        setSelectedStatus(status);
+        taskService
+            .updateTaskStatus(task.id, status.id, dispatch)
+            .then(() => {
+                message.success("Статус задачи обновлен!");
+                taskService.getAllTasks(dispatch);
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error(error);
+                message.error("Не удалось обновить статус задачи.");
+            });
+    };
 
     const handleTaskTitleEdit = (e) => {
         setEditedTitle(e.target.value);
@@ -83,11 +99,13 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
     };
 
     const handleDeleteTask = (taskId) => {
-        const category_id = task.category_id;
+        const project_id = task.project_id;
         taskService
-            .deleteTask(taskId, category_id, dispatch)
+            .deleteTask(taskId, project_id, dispatch)
             .then(() => {
                 message.success("Задача успешно удалена!");
+                taskService.getAllTasks(dispatch);
+                window.location.reload();
             })
             .catch((error) => {
                 console.error(error);
@@ -97,6 +115,7 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
 
     const handleDeleteClick = () => {
         handleDeleteTask(task.id);
+        taskService.getAllTasks(dispatch);
     };
 
     const handleCheckboxChange = (e) => {
@@ -108,10 +127,6 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
 
     const handleNotificationClick = () => {
         setShowNotificationForm(!showNotificationForm);
-    };
-
-    const handleRegularityClick = () => {
-        setShowRegularityMenu(!showRegularityMenu);
     };
 
     const handlePriorityClick = () => {
@@ -136,10 +151,6 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
         setShowNotificationForm(false);
     };
 
-    const handleRegularitySelect = (e) => {
-        setSelectedRegularity(e.item.props.children);
-    };
-
     const handlePrioritySelect = (e) => {
         setSelectedPriority(e.item.props.children);
     };
@@ -147,7 +158,7 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
     const updateTaskTitle = (taskId, editedTitle) => {
         const updatedTask = {...task, title: editedTitle};
         taskService
-            .updateTask(task.category_id, updatedTask, dispatch)
+            .updateTask(task.project_id, updatedTask, dispatch)
             .then(() => {
                 message.success("Заголовок задачи обновлен!");
                 taskService.getAllTasks(dispatch);
@@ -161,7 +172,7 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
     const updateTaskDescription = (taskId, editedDescription) => {
         const updatedTask = {...task, description: editedDescription};
         taskService
-            .updateTask(task.category_id, updatedTask, dispatch)
+            .updateTask(task.project_id, updatedTask, dispatch)
             .then(() => {
                 message.success("Описание задачи обновлено!");
                 taskService.getAllTasks(dispatch);
@@ -176,7 +187,7 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
         const notificationDateTime = date && time ? `${date} ${time}` : null;
         const updatedTask = {...task, notification: notificationDateTime};
         taskService
-            .updateTask(task.category_id, updatedTask, dispatch)
+            .updateTask(task.project_id, updatedTask, dispatch)
             .then(() => {
                 message.success("Уведомление задачи сохранено!");
                 taskService.getAllTasks(dispatch);
@@ -186,16 +197,6 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
                 message.error("Не удалось сохранить уведомление задачи.");
             });
     };
-
-    const menuRegularity = (
-        <Menu onClick={handleRegularitySelect}>
-            {regularities.map((regularity) => (
-                <Menu.Item key={regularity.id} disabled={task.archived}>
-                    {regularity.name}
-                </Menu.Item>
-            ))}
-        </Menu>
-    );
 
     const menuPriority = (
         <Menu onClick={handlePrioritySelect}>
@@ -211,34 +212,28 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
         <Card
             key={task.id}
             title={
-                <div style={{display: "flex", alignItems: "center"}}>
-                    <Checkbox
-                        checked={isCompleted}
-                        disabled={task.archived}
-                        onChange={handleCheckboxChange}
-                        style={{marginRight: "8px"}}
-                    />
-                    <span style={{textDecoration: isCompleted ? "line-through" : "none"}}>
-                        {isEditing ? (
-                            <Input
-                                value={editedTitle}
-                                onChange={handleTaskTitleEdit}
-                                onPressEnter={handleTitleSave}
-                                onBlur={handleTitleCancel}
-                                autoFocus
+                <div>
+                    <Link to={`/tasks/${task.id}`}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox
+                                checked={task.completed}
+                                onChange={handleCheckboxChange}
+                                style={{ marginRight: "8px" }}
+                                disabled={task.archived}
                             />
-                        ) : (
-                            task.title
-                        )}
-                    </span>
-                    <Tooltip title="Редактировать" placement="bottom">
-                        <Button
-                            type="text"
-                            icon={<EditOutlined/>}
-                            onClick={handleEditClick}
-                            disabled={task.archived}
-                        />
-                    </Tooltip>
+                            <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
+                                {task.title}
+                            </span>
+                            <Tooltip title="Редактировать" placement="bottom">
+                                <Button
+                                    type="text"
+                                    icon={<EditOutlined />}
+                                    onClick={handleEditClick}
+                                    disabled={task.archived}
+                                />
+                            </Tooltip>
+                        </div>
+                    </Link>
                 </div>
             }
             style={{
@@ -287,32 +282,36 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
             )}
             <div>
                 <div>
-                    <span style={{fontWeight: "bold"}}>Регулярность:</span>{" "}
-                    {selectedRegularity}
-                </div>
-                <div>
-                    <span style={{fontWeight: "bold"}}>Напомнить:</span>{" "}
-                    {selectedReminder}
+                    <span style={{fontWeight: "bold"}}>Исполнитель:</span>{" "}
                 </div>
                 <div>
                     <span style={{fontWeight: "bold"}}>Приоритет:</span>{" "}
                     {selectedPriority}
                 </div>
+                <div>
+                    <span style={{fontWeight: "bold"}}>Статус:</span>{" "}
+                    {/* Используем Dropdown для отображения выпадающего меню со списком статусов */}
+                    <Dropdown
+                        overlay={(
+                            <Menu>
+                                {statuses.map((status) => (
+                                    <Menu.Item key={status.id} disabled={task.archived}
+                                               onClick={() => handleStatusChange(status)}>
+                                        {status.name}
+                                    </Menu.Item>
+                                ))}
+                            </Menu>
+                        )}
+                        placement="bottomRight"
+                    >
+                        <Button type="text" disabled={task.archived}>
+                            {selectedStatus.name} {/* Отображаем текущий выбранный статус */}
+                        </Button>
+                    </Dropdown>
+                </div>
             </div>
             <div style={{display: "flex", justifyContent: "space-between", marginTop: "8px"}}>
                 <div style={{display: "flex", alignItems: "center"}}>
-                    <Dropdown
-                        overlay={menuRegularity}
-                        visible={showRegularityMenu}
-                        onVisibleChange={handleRegularityClick}
-                        placement="bottomRight"
-                    >
-                        <Button
-                            type="text"
-                            icon={<CalendarOutlined/>}
-                            disabled={task.archived}
-                        />
-                    </Dropdown>
                     <Dropdown
                         overlay={menuPriority}
                         visible={showPriorityMenu}
@@ -365,18 +364,11 @@ const TaskCard = ({task, handleArchiveTask, selectedTask}) => {
                             disabled={task.archived}
                         />
                     </Tooltip>
-                    <Tooltip title="Архивировать" placement="bottom">
-                        <Button
-                            type="text"
-                            icon={<InboxOutlined/>}
-                            onClick={handleArchiveClick}
-                            disabled={task.archived}
-                        />
-                    </Tooltip>
                 </div>
             </div>
         </Card>
-    );
+    )
+        ;
 };
 
 export default TaskCard;

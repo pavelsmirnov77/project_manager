@@ -22,33 +22,20 @@ public interface TaskService {
      */
     Optional<Task> findTaskById(Long taskId);
 
+    /**
+     * Ищет все задачи
+     *
+     * @return список всех задач всех проектов
+     */
     List<Task> findAllTasks();
 
     /**
-     * Ищет все задачи с заданным именем
+     * Ищет все задачи в проекте по id проекта
      *
-     * @param titleTask заданное имя задачи
-     * @return список задач с заданным именем
+     * @param projectId id проекта
+     * @return список задач в проекте
      */
-    List<Task> findAllTasksByName(String titleTask);
-
-    /**
-     * Ищет все неархивные задачи
-     *
-     * @param title имя задачи
-     * @return список неархивных задач
-     */
-    List<Task> findAllTaskNotArchived(String title);
-
-    List<Task> findAllTasksByCategoryId(long categoryId);
-
-    /**
-     * Ищет все архивные задачи
-     *
-     * @param title имя задачи
-     * @return список архивных задач
-     */
-    List<Task> findAllTaskArchived(String title);
+    List<Task> findAllTasksByProjectId(long projectId);
 
     /**
      * Обновляет информацию о задаче
@@ -57,23 +44,6 @@ public interface TaskService {
      * @return true, если обновлено удачно, иначе false
      */
     boolean updateTask(Task task);
-
-    /**
-     * Помечает задачу как архивированную
-     *
-     * @param taskId id задачи
-     * @return true, если задача занесена в архив, иначе false
-     */
-    boolean addToArchive(long taskId);
-
-    /**
-     * Изменяет регулярность выполнения задачи
-     *
-     * @param taskId id задачи
-     * @param regularity регулярность выполнения
-     * @return измененная задача
-     */
-    Task changeTaskRegularity(long taskId, Regularity regularity);
 
     /**
      * Изменяет приоритет задачи
@@ -90,4 +60,14 @@ public interface TaskService {
      * @param taskId id добавляемой в корзину задачи
      */
     boolean addToTrash(Long taskId);
+
+    /**
+     * Находит задачи по списку идентификаторов статусов
+     *
+     * @param statusIds список идентификаторов статусов
+     * @return список задач с указанными статусами
+     */
+    List<Task> findTasksByStatuses(Long statusIds);
+
+    boolean updateTaskStatus(long taskId, long statusId);
 }

@@ -8,20 +8,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table( name = "users",
+@Table(
+        name = "users",
+        schema = "project_manager",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
-        })
+        }
+)
 @Data
 @NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank
     @Size(max = 20)
@@ -37,15 +41,31 @@ public class User {
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
+    @JoinTable(
+            name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 
-    public User(String username, String email, String password) {
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
+
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL)
+    private List<Dialog> dialogsAsUser1;
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
+    private List<Dialog> dialogsAsUser2;
+
+    public User(String username, String email, String password, byte[] profilePicture) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.profilePicture = profilePicture;
     }
 
     public User(long id) {

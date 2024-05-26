@@ -11,6 +11,7 @@ import ReminderPage from "./pages/ReminderPage";
 import TrashPage from "./pages/TrashPage";
 import authService from "./services/authService";
 import UserPage from "./pages/UserPage";
+import TaskDetails from "./pages/TaskDetailsPage";
 
 const App = () => {
 
@@ -29,7 +30,8 @@ const App = () => {
             <Route path="/todo/archive" element={<ArchivePage/>}/>
             <Route path="/todo/reminder" element={<ReminderPage/>}/>
             <Route path="/todo/trash" element={<TrashPage/>}/>
-            <Route path="/users/profile" element={<UserPage/>}/>
+            <Route path="/users" element={<UserPage/>}/>
+            <Route path="/tasks/:taskId" element={<TaskDetails/>}/>
         </Routes>
     );
 };

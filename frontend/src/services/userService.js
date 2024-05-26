@@ -20,8 +20,29 @@ const getUser = (id, dispatch) => {
         });
 };
 
+const uploadProfilePicture = (userId, file) => {
+    let formData = new FormData();
+    formData.append("file", file);
+    return axios.post(API_URL + `/${userId}/profile-picture`, formData, {
+        headers: {
+            ...authHeader(),
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+};
+
+const getProfilePicture = (userId) => {
+    return axios.get(API_URL + `/${userId}/profile-picture`, {
+        responseType: 'arraybuffer',
+        headers: authHeader()
+    });
+};
+
+
 const userService = {
-    getUser
+    getUser,
+    uploadProfilePicture,
+    getProfilePicture
 };
 
 export default userService

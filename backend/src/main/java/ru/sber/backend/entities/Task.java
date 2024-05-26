@@ -1,10 +1,12 @@
 package ru.sber.backend.entities;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -24,26 +26,22 @@ public class Task {
     String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
-    private Category category;
+    private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "prioriry_id", nullable = false)
+    @JoinColumn(name = "priority_id", nullable = false)
     private Priority priority;
 
     @ManyToOne
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-    @ManyToOne
-    @JoinColumn(name = "regularity_id", nullable = false)
-    private Regularity regularity;
-
     @Column
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deadline;
 
-    @Column(nullable = false)
-    private boolean archived;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 }

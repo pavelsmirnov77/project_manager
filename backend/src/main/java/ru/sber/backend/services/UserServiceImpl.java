@@ -23,7 +23,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserById(long userId) {
+    public Optional<User> getUserById(Long userId) {
         return userRepository.findById(userId);
+    }
+
+    public void updateProfilePicture(Long userId, byte[] profilePicture) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setProfilePicture(profilePicture);
+            userRepository.save(user);
+        } else {
+            throw new RuntimeException("Пользователь с id: " + userId + " не найден");
+        }
+    }
+
+    public byte[] getProfilePicture(long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        return userOptional.map(User::getProfilePicture).orElse(null);
     }
 }
