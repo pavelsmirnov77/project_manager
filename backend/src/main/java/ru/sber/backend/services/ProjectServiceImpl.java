@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.sber.backend.entities.Project;
 import ru.sber.backend.entities.Task;
@@ -27,6 +28,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public Project createProject(Project project) {
         long userId = getUserIdFromSecurityContext();
         project.setUser(new User(userId));
@@ -63,6 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional
     public boolean deleteProjectById(Long projectId) {
         projectRepository.deleteById(projectId);
         return true;

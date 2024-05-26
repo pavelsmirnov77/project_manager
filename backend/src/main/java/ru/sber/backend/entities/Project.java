@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "projects", schema = "project_manager")
+@Table(name = "projects")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

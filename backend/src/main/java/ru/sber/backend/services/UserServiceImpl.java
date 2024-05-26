@@ -2,6 +2,7 @@ package ru.sber.backend.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sber.backend.entities.User;
 import ru.sber.backend.repositories.UserRepository;
 
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId);
     }
 
+    @Transactional
     public void updateProfilePicture(Long userId, byte[] profilePicture) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {

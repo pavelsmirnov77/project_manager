@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @Table(
         name = "users",
-        schema = "project_manager",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
