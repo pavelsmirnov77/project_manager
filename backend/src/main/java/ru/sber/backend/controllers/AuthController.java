@@ -71,7 +71,7 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        JwtResponse body = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, userDetails.getProfilePicture());
+        JwtResponse body = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles, userDetails.getName(), userDetails.getStudyGroup());
 
         return ResponseEntity
                 .ok(body);
@@ -93,8 +93,8 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Email уже используется"));
         }
 
-        User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()), signUpRequest.getProfilePicture());
+        User user = new User(signUpRequest.getUsername(), signUpRequest.getName(), signUpRequest.getEmail(),
+                encoder.encode(signUpRequest.getPassword()));
 
         Set<Role> roles = new HashSet<>();
 

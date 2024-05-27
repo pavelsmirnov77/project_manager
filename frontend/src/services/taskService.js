@@ -89,27 +89,6 @@ const getStatuses = (dispatch) => {
         );
 };
 
-const getRegularities = (dispatch) => {
-    return axios
-        .get(API_URL + "/regularities", {headers: authHeader()})
-        .then(
-            (response) => {
-                dispatch(setRegularities(response.data));
-                return response.data;
-            },
-            (error) => {
-                const _content =
-                    (error.response && error.response.data) ||
-                    error.message ||
-                    error.toString();
-
-                console.error(_content);
-
-                dispatch(setRegularities([]));
-            }
-        );
-};
-
 const getPriorities = (dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = user ? user.accessToken : null;
@@ -214,7 +193,7 @@ const deleteTask = (taskId, project_id, dispatch) => {
 };
 
 const updateTaskStatus = (taskId, statusId, dispatch) => {
-    return axios.put(`${API_URL}/${taskId}/status/${statusId}`, null, { headers: authHeader() }).then(
+    return axios.put(`${API_URL}/${taskId}/status/${statusId}`, null, {headers: authHeader()}).then(
         (response) => {
             console.log("Статус задачи обновлен успешно");
             getAllTasks(dispatch);
@@ -227,12 +206,49 @@ const updateTaskStatus = (taskId, statusId, dispatch) => {
     );
 };
 
+const assignUserToTask = (taskId, userId, dispatch) => {
+    return axios.put(`/todo/tasks/${taskId}/assign/${userId}`, null, {headers: authHeader()}).then(
+        (response) => {
+            console.log("Исполнитель задачи успешно обновлен");
+            return response.data;
+        },
+        (error) => {
+            console.error("Ошибка при обновлении исполнителя задачи", error);
+            return null;
+        }
+    );
+};
+
+const updateTaskComplexity = (taskId, complexity) => {
+    return axios.put(`${API_URL}/${taskId}/complexity?complexity=${complexity}`, null, {headers: authHeader()}).then(
+        (response) => {
+            console.log("Трудозатраты задачи обновлены успешно");
+            return response.data;
+        },
+        (error) => {
+            console.error("Ошибка при обновлении трудозатрат задачи", error);
+            return null;
+        }
+    );
+};
+
+const updateCurrentComplexity = (taskId, currentComplexity) => {
+    return axios.put(`${API_URL}/${taskId}/currentComplexity?currentComplexity=${currentComplexity}`, null, {headers: authHeader()}).then(
+        (response) => {
+            console.log("Текущие трудозатраты задачи обновлены успешно");
+            return response.data;
+        },
+        (error) => {
+            console.error("Ошибка при обновлении текущих трудозатрат задачи", error);
+            return null;
+        }
+    );
+};
 
 const taskService = {
     getAllTasks,
     getTasksFromProjects,
     getPriorities,
-    getRegularities,
     getStatuses,
     getTasksByStatus,
     createTask,
@@ -240,7 +256,10 @@ const taskService = {
     selectTask,
     deleteTask,
     updateTaskStatus,
-    getTaskById
+    getTaskById,
+    assignUserToTask,
+    updateTaskComplexity,
+    updateCurrentComplexity
 };
 
 export default taskService;

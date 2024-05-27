@@ -21,14 +21,16 @@ public class TaskServiceImpl implements TaskService {
     private final ProjectService projectService;
     private final PriorityRepository priorityRepository;
     private final StatusRepository statusRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, ProjectService projectService, PriorityRepository priorityRepository, StatusRepository statusRepository, StatusRepository statusRepository1) {
+    public TaskServiceImpl(TaskRepository taskRepository, TrashRepository trashRepository, ProjectService projectService, PriorityRepository priorityRepository, StatusRepository statusRepository, StatusRepository statusRepository1, UserRepository userRepository) {
         this.taskRepository = taskRepository;
         this.trashRepository = trashRepository;
         this.projectService = projectService;
         this.priorityRepository = priorityRepository;
         this.statusRepository = statusRepository1;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -139,6 +141,49 @@ public class TaskServiceImpl implements TaskService {
                 log.error("Статус с id {} не найден", statusId);
                 return false;
             }
+        } else {
+            log.error("Задача с id {} не найдена", taskId);
+            return false;
+        }
+    }
+
+    @Override
+    public void assignUserToTask(long taskId, Long userId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalTask.isPresent() && optionalUser.isPresent()) {
+            Task task = optionalTask.get();
+            User user = optionalUser.get();
+            task.setAssignee(user);
+            taskRepository.save(task);
+        } else {
+            throw new RuntimeException("Задача или пользователь не найдены");
+        }
+    }
+
+    @Override
+    public boolean updateTaskComplexity(long taskId, Integer complexity) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            task.setComplexity(complexity);
+            taskRepository.save(task);
+            return true;
+        } else {
+            log.error("Задача с id {} не найдена", taskId);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateCurrentComplexity(long taskId, Integer currentComplexity) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            task.setCurrentComplexity(currentComplexity);
+            taskRepository.save(task);
+            return true;
         } else {
             log.error("Задача с id {} не найдена", taskId);
             return false;

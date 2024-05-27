@@ -69,5 +69,38 @@ public interface TaskService {
      */
     List<Task> findTasksByStatuses(Long statusIds);
 
+    /**
+     * Обновляет статус задачи
+     *
+     * @param taskId id задачи
+     * @param statusId id статуса
+     * @return true - статус обновлен успешно, false - статус не обновлен
+     */
     boolean updateTaskStatus(long taskId, long statusId);
+
+    /**
+     * Назначает человека ответственным за задачу по id
+     *
+     * @param taskId id задачи
+     * @param userId id пользователя
+     */
+    void assignUserToTask(long taskId, Long userId);
+
+    /**
+     * Обновляет трудозатраты, которые планируется затратить на задачу (в часах)
+     *
+     * @param taskId id задачи
+     * @param complexity трудозатраты в часах
+     * @return true - трудозатраты обновлены удачно, false - неудачно
+     */
+    boolean updateTaskComplexity(long taskId, Integer complexity);
+
+    /**
+     * Обновляет трудозатраты, которые планируется затратить на задачу (в часах)
+     *
+     * @param taskId id задачи
+     * @param currentComplexity затраченные трудозатраты в часах
+     * @return true - затраченные трудозатраты обновлены удачно, false - неудачно
+     */
+    boolean updateCurrentComplexity(long taskId, Integer currentComplexity);
 }

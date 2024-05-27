@@ -38,11 +38,50 @@ const getProfilePicture = (userId) => {
     });
 };
 
+const updateUserName = (userId, newName, dispatch) => {
+    return axios.put(API_URL + `/${userId}/name`, {name: newName}, {headers: authHeader()})
+        .then(response => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            user.name = newName;
+            localStorage.setItem("user", JSON.stringify(user));
+
+            dispatch(setUser(user));
+
+            return response.data;
+        });
+};
+
+const updateUserGroup = (userId, newGroup, dispatch) => {
+    return axios.put(API_URL + `/${userId}/group`, {group: newGroup}, {headers: authHeader()})
+        .then(response => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            user.group = newGroup;
+            localStorage.setItem("user", JSON.stringify(user));
+
+            dispatch(setUser(user));
+
+            return response.data;
+        });
+};
+
+const getAllUsers = (dispatch) => {
+    return axios.get(API_URL + `/all`, {headers: authHeader()})
+        .then((response) => {
+            return response.data;
+        })
+        .catch((error) => {
+            console.error("Ошибка при получении списка пользователей:", error);
+            throw error;
+        });
+};
 
 const userService = {
     getUser,
     uploadProfilePicture,
-    getProfilePicture
+    getProfilePicture,
+    updateUserName,
+    updateUserGroup,
+    getAllUsers,
 };
 
 export default userService

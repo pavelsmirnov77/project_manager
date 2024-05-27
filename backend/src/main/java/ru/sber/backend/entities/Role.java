@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", schema = "project_manager")
 @Data
 @NoArgsConstructor
 public class Role {

@@ -30,13 +30,23 @@ const RegistrationPage = () => {
                     onFinish={onFinish}>
                     <Form.Item
                         name="username"
-                        label="Имя"
+                        label="Логин"
                         rules={[{
                             required: true,
-                            message: 'Введите имя'
+                            message: 'Введите логин'
                         }]}
                     >
-                        <Input prefix={<UserOutlined/>} placeholder="Имя"/>
+                        <Input prefix={<UserOutlined/>} placeholder="Логин"/>
+                    </Form.Item>
+                    <Form.Item
+                        name="name"
+                        label="ФИО"
+                        rules={[{
+                            required: true,
+                            message: 'Введите ФИО'
+                        }]}
+                    >
+                        <Input prefix={<UserOutlined/>} placeholder="ФИО"/>
                     </Form.Item>
                     <Form.Item
                         name="email"

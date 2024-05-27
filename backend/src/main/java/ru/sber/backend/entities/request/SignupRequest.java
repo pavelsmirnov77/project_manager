@@ -15,6 +15,10 @@ public class SignupRequest {
     private String username;
 
     @NotBlank
+    @Size(min = 3, max = 100)
+    private String name;
+
+    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
@@ -22,8 +26,6 @@ public class SignupRequest {
     private Set<String> role;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 6, max = 100)
     private String password;
-
-    private byte[] profilePicture;
 }

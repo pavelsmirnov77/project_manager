@@ -28,7 +28,9 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
-    private byte[] profilePicture;
+    private String name;
+
+    private String studyGroup;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -41,7 +43,8 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getProfilePicture(),
+                user.getName(),
+                user.getStudyGroup(),
                 authorities);
     }
 
@@ -68,8 +71,12 @@ public class UserDetailsImpl implements UserDetails {
         return username;
     }
 
-    public byte[] getProfilePicture() {
-        return profilePicture;
+    public String getName() {
+        return name;
+    }
+
+    public String getStudyGroup() {
+        return studyGroup;
     }
 
     @Override

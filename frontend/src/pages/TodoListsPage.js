@@ -110,7 +110,7 @@ export const TodoListsPage = () => {
                                    style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список задач пуст</span>}
                         />
                     ) : (
-                        <div style={{marginTop: "30px"}}>
+                        <div style={{marginTop: "30px", marginRight: "100px"}}>
                             {projects.map((project) => (
                                 <ProjectCard
                                     key={project.id}

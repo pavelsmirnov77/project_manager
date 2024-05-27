@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "tasks", schema = "project_manager")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -44,4 +44,14 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+
+    @Column
+    private Integer currentComplexity;
+
+    @Column
+    private Integer complexity;
 }

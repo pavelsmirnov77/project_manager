@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Card, Avatar, Typography, Button, Upload, message} from "antd";
+import {Card, Avatar, Typography, Button, Upload, Input, message} from "antd";
 import {UserOutlined, LogoutOutlined, UploadOutlined, BackwardOutlined} from "@ant-design/icons";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch} from "react-redux";
 import {setUser} from "../slices/userSlice";
 import {Link} from "react-router-dom";
 import UserService from "../services/userService";
@@ -15,6 +15,10 @@ const UserProfilePage = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user.id;
     const [avatar, setAvatar] = useState(null);
+    const [editingName, setEditingName] = useState(false);
+    const [editingGroup, setEditingGroup] = useState(false);
+    const [newName, setNewName] = useState(user.name);
+    const [newGroup, setNewGroup] = useState(user.group);
 
     useEffect(() => {
         UserService.getUser(userId, dispatch);
@@ -27,11 +31,11 @@ const UserProfilePage = () => {
             .catch((error) => {
                 console.error("Не удалось получить аватарку:", error);
             });
-    }, []);
+    }, [userId, dispatch]);
 
     const handleLogout = () => {
         AuthService.logout();
-        message.success("Вы успешно вышли! До свидания!")
+        message.success("Вы успешно вышли! До свидания!");
     };
 
     const handleAvatarUpload = (file) => {
@@ -50,6 +54,41 @@ const UserProfilePage = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleNameChange = () => {
+        UserService.updateUserName(userId, newName)
+            .then(() => {
+                dispatch(setUser({...user, name: newName}));
+                setEditingName(false);
+                message.success("ФИО успешно обновлено");
+            })
+            .catch((error) => {
+                message.error("Не удалось обновить ФИО");
+            });
+    };
+
+    const handleGroupChange = () => {
+        UserService.updateUserGroup(userId, newGroup)
+            .then(() => {
+                dispatch(setUser({...user, group: newGroup}));
+                setEditingGroup(false);
+                message.success("Учебная группа успешно обновлена");
+            })
+            .catch((error) => {
+                message.error("Не удалось обновить учебную группу");
+            });
+    };
+
+    const getRoleName = (roles) => {
+        if (roles.includes("ROLE_ADMIN")) {
+            return "Администратор";
+        } else if (roles.includes("ROLE_PM")) {
+            return "Руководитель проекта";
+        } else if (roles.includes("ROLE_USER")) {
+            return "Пользователь";
+        } else {
+            return "Неизвестная роль";
+        }
+    };
 
     return (
         <div>
@@ -124,8 +163,33 @@ const UserProfilePage = () => {
                             fontSize: '20px',
                             color: '#ffffff'
                         }}>
-                            Имя пользователя: {user.username}
+                            Логин пользователя: {user.username}
                         </Text>
+                    </div>
+                    <div style={{margin: '20px 0'}}>
+                        {editingName ? (
+                            <div>
+                                <Input
+                                    value={newName}
+                                    onChange={(e) => setNewName(e.target.value)}
+                                    style={{width: '70%', marginRight: '10px'}}
+                                />
+                                <Button onClick={handleNameChange} type="primary">Сохранить</Button>
+                                <Button onClick={() => setEditingName(false)}
+                                        style={{marginLeft: '10px'}}>Отмена</Button>
+                            </div>
+                        ) : (
+                            <div>
+                                <Text style={{
+                                    fontSize: '20px',
+                                    color: '#ffffff'
+                                }}>
+                                    ФИО пользователя: {user.name}
+                                </Text>
+                                <Button onClick={() => setEditingName(true)}
+                                        style={{marginLeft: '10px'}}>Редактировать</Button>
+                            </div>
+                        )}
                     </div>
                     <div>
                         <Text style={{
@@ -136,25 +200,42 @@ const UserProfilePage = () => {
                         </Text>
                     </div>
                     <div style={{margin: '20px 0'}}>
-                        <Text style={{
-                            fontSize: '20px',
-                            color: '#ffffff'
-                        }}>
-                            Учебная группа: {user.group}
-                        </Text>
+                        {editingGroup ? (
+                            <div>
+                                <Input
+                                    value={newGroup}
+                                    onChange={(e) => setNewGroup(e.target.value)}
+                                    style={{width: '70%', marginRight: '10px'}}
+                                />
+                                <Button onClick={handleGroupChange} type="primary">Сохранить</Button>
+                                <Button onClick={() => setEditingGroup(false)}
+                                        style={{marginLeft: '10px'}}>Отмена</Button>
+                            </div>
+                        ) : (
+                            <div>
+                                <Text style={{
+                                    fontSize: '20px',
+                                    color: '#ffffff'
+                                }}>
+                                    Учебная группа: {user.studyGroup}
+                                </Text>
+                                <Button onClick={() => setEditingGroup(true)}
+                                        style={{marginLeft: '10px'}}>Редактировать</Button>
+                            </div>
+                        )}
                     </div>
                     <div style={{margin: '20px 0'}}>
                         <Text style={{
                             fontSize: '20px',
                             color: '#ffffff'
                         }}>
-                            Роль: {user.roles}
+                            Роль: {getRoleName(user.roles)}
                         </Text>
                     </div>
                     <div style={{
                         display: 'flex',
                         justifyContent: 'center',
-                        marginTop: '200px'
+                        marginTop: '150px'
                     }}>
                         <Link to="/todo/note">
                             <Button icon={<BackwardOutlined/>}

@@ -6,9 +6,9 @@ insert into project_manager.roles (name)
 values ('ROLE_ADMIN');
 
 insert into project_manager.statuses (name)
-values ('REQUIREMENTS');
-insert into project_manager.statuses (name)
 values ('ANALYSIS');
+insert into project_manager.statuses (name)
+values ('REQUIREMENTS');
 insert into project_manager.statuses (name)
 values ('DEVELOPMENT');
 insert into project_manager.statuses (name)

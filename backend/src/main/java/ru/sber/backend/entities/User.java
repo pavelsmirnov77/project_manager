@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(
         name = "users",
+        schema = "project_manager",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
@@ -21,6 +23,7 @@ import java.util.Set;
 )
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +34,10 @@ public class User {
     private String username;
 
     @NotBlank
+    @Size(max = 20)
+    private String name;
+
+    @NotBlank
     @Size(max = 50)
     @Email
     private String email;
@@ -38,6 +45,9 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    @Column(name = "study_group")
+    private String studyGroup;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -60,11 +70,11 @@ public class User {
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL)
     private List<Dialog> dialogsAsUser2;
 
-    public User(String username, String email, String password, byte[] profilePicture) {
+    public User(String username, String name, String email, String password) {
         this.username = username;
+        this.name = name;
         this.email = email;
         this.password = password;
-        this.profilePicture = profilePicture;
     }
 
     public User(long id) {

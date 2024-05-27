@@ -1,6 +1,7 @@
 package ru.sber.backend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.sber.backend.entities.*;
@@ -33,8 +34,8 @@ public class TaskController {
      * @return созданная задача
      */
     @PostMapping
-    public ResponseEntity<?> createTask(@RequestParam("categoryId") long categoryId, @RequestBody Task task) {
-        long taskId = taskService.createTask(task, categoryId);
+    public ResponseEntity<?> createTask(@RequestParam("projectId") long projectId, @RequestBody Task task) {
+        long taskId = taskService.createTask(task, projectId);
         log.info("Добавление задачи с id: {}", taskId);
 
         return ResponseEntity.created(URI.create("/todo/tasks/" + taskId)).build();
@@ -68,6 +69,12 @@ public class TaskController {
         return taskService.findAllTasks();
     }
 
+    /**
+     * Получает все задачи id проекта
+     *
+     * @param projectId id преокта
+     * @return список задач
+     */
     @GetMapping("/project/{projectId}")
     public List<Task> findAllTasksByProjectId(@PathVariable long projectId) {
         return taskService.findAllTasksByProjectId(projectId);
@@ -106,7 +113,7 @@ public class TaskController {
     @GetMapping("/statuses")
     public List<Status> getStatuses() {
         log.info("Получаение статусов");
-        return statusService.findAllCategories();
+        return statusService.findAllProjects();
     }
 
     /**
@@ -120,6 +127,12 @@ public class TaskController {
         return priorityService.findAllPrioriry();
     }
 
+    /**
+     * Получает все задачи по id статуса
+     *
+     * @param statusId id статуса
+     * @return список найденных задач
+     */
     @GetMapping("/status/{statusId}")
     public List<Task> findAllTasksByStatusId(@PathVariable Long statusId) {
         log.info("Получение всех задач по статусу с id: {}", statusId);
@@ -142,6 +155,59 @@ public class TaskController {
             return ResponseEntity.ok("Статус задачи обновлен");
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Обновляет исполнителя задачи
+     *
+     * @param taskId id задачи
+     * @param userId id пользователя, которого нужно закрепить за задачей
+     * @return ответ о выполнении операции
+     */
+    @PutMapping("/{taskId}/assign/{userId}")
+    public ResponseEntity<?> assignUserToTask(@PathVariable Long taskId, @PathVariable Long userId) {
+        try {
+            taskService.assignUserToTask(taskId, userId);
+            return ResponseEntity.ok("Исполнитель задачи успешно обновлен");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Не удалось обновить исполнителя задачи: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Обновляет трудозатраты задачи
+     *
+     * @param taskId id задачи
+     * @param complexity новые трудозатраты
+     * @return ответ об успешном обновлении трудозатрат
+     */
+    @PutMapping("/{taskId}/complexity")
+    public ResponseEntity<?> updateTaskComplexity(@PathVariable long taskId, @RequestParam Integer complexity) {
+        log.info("Обновление трудозатрат задачи с id: {}", taskId);
+        boolean updated = taskService.updateTaskComplexity(taskId, complexity);
+        if (updated) {
+            return ResponseEntity.ok("Трудозатраты задачи обновлены");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Задача не найдена");
+        }
+    }
+
+    /**
+     * Обновляет текущие трудозатраты задачи
+     *
+     * @param taskId id задачи
+     * @param currentComplexity новые текущие трудозатраты
+     * @return ответ об успешном обновлении текущих трудозатрат
+     */
+    @PutMapping("/{taskId}/currentComplexity")
+    public ResponseEntity<?> updateCurrentComplexity(@PathVariable long taskId, @RequestParam Integer currentComplexity) {
+        log.info("Обновление текущих трудозатрат задачи с id: {}", taskId);
+        boolean updated = taskService.updateCurrentComplexity(taskId, currentComplexity);
+        if (updated) {
+            return ResponseEntity.ok("Текущие трудозатраты задачи обновлены");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Задача не найдена");
         }
     }
 }

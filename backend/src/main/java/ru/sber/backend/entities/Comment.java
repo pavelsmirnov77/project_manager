@@ -8,7 +8,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "comments")
+@Table(name = "comments", schema = "project_manager")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

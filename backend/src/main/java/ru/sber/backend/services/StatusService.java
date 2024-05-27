@@ -5,5 +5,5 @@ import ru.sber.backend.entities.Status;
 import java.util.List;
 
 public interface StatusService {
-    List<Status> findAllCategories();
+    List<Status> findAllProjects();
 }

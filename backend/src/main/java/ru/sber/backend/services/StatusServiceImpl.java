@@ -17,7 +17,7 @@ public class StatusServiceImpl implements StatusService {
     }
 
     @Override
-    public List<Status> findAllCategories() {
+    public List<Status> findAllProjects() {
         return statusRepository.findAll();
     }
 }
