@@ -5,7 +5,7 @@ import {EditOutlined, LoadingOutlined, UploadOutlined} from "@ant-design/icons";
 import taskService from "../services/taskService";
 import MenuBar from "../components/MenuBar";
 import {useDispatch} from "react-redux";
-import userService from "../services/userService";
+import ProjectService from "../services/projectService"
 
 const {Title, Paragraph} = Typography;
 const {Option} = Select;
@@ -52,15 +52,19 @@ const TaskDetails = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const users = await userService.getAllUsers();
-                setUsers(users);
+                const projectId = 2;
+                if (projectId) {
+                    console.log(projectId)
+                    const users = await ProjectService.getUsersByProjectId(projectId);
+                    setUsers(users);
+                }
             } catch (error) {
-                console.error("Ошибка при получении списка пользователей:", error);
+                console.error("Ошибка при получении списка пользователей проекта:", error);
             }
         };
 
         fetchUsers();
-    }, []);
+    }, [task]);
 
     const handleTitleEdit = () => {
         setIsEditingTitle(true);
@@ -108,8 +112,23 @@ const TaskDetails = () => {
 
     const handleCommentSubmit = () => {
         if (comment.trim()) {
-            message.success("Комментарий добавлен!");
-            setComment("");
+            const formData = new FormData();
+            formData.append("userId", selectedUser.id.toString());
+            formData.append("content", comment);
+            fileList.forEach(file => {
+                formData.append("files", file);
+            });
+
+            taskService.addCommentToTask(taskId, formData)
+                .then(() => {
+                    message.success("Комментарий добавлен!");
+                    setComment("");
+                    setFileList([]);
+                })
+                .catch(error => {
+                    console.error("Ошибка при добавлении комментария:", error);
+                    message.error("Не удалось добавить комментарий.");
+                });
         } else {
             message.error("Комментарий не может быть пустым.");
         }

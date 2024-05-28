@@ -64,7 +64,7 @@ const updateUserGroup = (userId, newGroup, dispatch) => {
         });
 };
 
-const getAllUsers = (dispatch) => {
+const getAllUsers = () => {
     return axios.get(API_URL + `/all`, {headers: authHeader()})
         .then((response) => {
             return response.data;

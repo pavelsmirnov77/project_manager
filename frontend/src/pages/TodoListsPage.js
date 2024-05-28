@@ -12,6 +12,7 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectService from "../services/projectService";
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router-dom";
+import TaskService from "../services/taskService";
 
 moment.locale("ru");
 
@@ -23,12 +24,21 @@ export const TodoListsPage = () => {
     const [form] = Form.useForm();
     const selectedProject = useSelector((state) => state.projects.selectedProject);
     const projectsIds = projects.map((project) => project.id);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user.id;
 
     useEffect(() => {
         if (selectedProject && projectsIds.includes(selectedProject.id)) {
             taskService.getTasksFromProjects(id, dispatch);
         }
     }, [selectedProject]);
+
+    useEffect(() => {
+        if (currentUserId) {
+            ProjectService.getProjectsForUser(currentUserId, dispatch);
+        }
+    }, []);
+
 
     const handleProjectInputChange = (e) => {
         setProjectName(e.target.value);
@@ -49,14 +59,10 @@ export const TodoListsPage = () => {
             };
             ProjectService.createProject(newProject, dispatch).then(() => {
                 message.success(`Проект "${newProject.name}" успешно создан!`)
-                ProjectService.getProjects(dispatch);
+                ProjectService.getProjectsForUser(currentUserId, dispatch);
             })
         }
     };
-
-    useEffect(() => {
-        ProjectService.getProjects(dispatch)
-    }, []);
 
     const handleEditProject = (projectId, newTitle) => {
         const updatedProjects = projects.map((project) => {
@@ -107,7 +113,7 @@ export const TodoListsPage = () => {
                         <Empty style={{marginTop: "150px"}}
                                image={<AppstoreAddOutlined style={{fontSize: 64, color: "rgba(0, 0, 0, 0.5)"}}/>}
                                description={<span
-                                   style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список задач пуст</span>}
+                                   style={{color: "rgba(0, 0, 0, 0.5)", fontSize: 20}}>Список проектов пуст</span>}
                         />
                     ) : (
                         <div style={{marginTop: "30px", marginRight: "100px"}}>

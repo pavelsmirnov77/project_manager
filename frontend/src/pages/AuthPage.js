@@ -33,7 +33,7 @@ const AuthPage = () => {
                 console.log(user)
                 dispatch(login(user))
                 message.success("Вы успешно вошли в аккунт! Здравствуйте!")
-                navigate("/todo/note")
+                navigate("/my/projects")
             }, (error) => {
                 const _content = (error.response && error.response.data) || error.message || error.toString();
                 console.log(_content);

@@ -12,6 +12,7 @@ import TaskCard from "./TaskCard";
 import ProjectService from "../services/projectService";
 import {useDispatch, useSelector} from "react-redux";
 import taskService from "../services/taskService";
+import TaskService from "../services/taskService";
 
 const colorOptions = [
     "#333232",
@@ -92,6 +93,10 @@ export const ProjectCard = ({project}) => {
         fetchData();
     }, [dispatch]);
 
+    useEffect(() => {
+        TaskService.getTasksFromProjects(project.id, dispatch);
+    }, [project.id]);
+
     const handleProjectTitleEdit = (e) => {
         setEditedTitle(e.target.value);
     };
@@ -140,7 +145,7 @@ export const ProjectCard = ({project}) => {
                 .createTask(projectId, newTask, dispatch)
                 .then(() => {
                     message.success("Задача успешно добавлена!");
-                    taskService.getAllTasks(dispatch);
+                    TaskService.getTasksFromProjects(projectId, dispatch);
                     window.location.reload();
                 })
                 .catch((error) => {
@@ -173,7 +178,7 @@ export const ProjectCard = ({project}) => {
                 .deleteTask(taskId, projectId, dispatch)
                 .then(() => {
                     message.success("Задача успешно удалена!");
-                    taskService.getAllTasks(dispatch);
+                    taskService.getTasksFromProjects(project.id, dispatch())
                 })
                 .catch((error) => {
                     console.error(error);

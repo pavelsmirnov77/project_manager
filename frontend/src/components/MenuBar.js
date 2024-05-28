@@ -82,20 +82,20 @@ const MenuBar = () => {
                     }}
                 >
                     <Menu
-                        style={{background: '#333232', zIndex: 1,}}
+                        style={{background: '#333232', zIndex: 1}}
                         theme="dark"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         onClick={handleMenuClick}
                     >
-                        <Menu.Item key="/todo/note" icon={<BulbOutlined/>}>
-                            <Link to="/todo/note">Задачи</Link>
+                        <Menu.Item key="/my/projects" icon={<BulbOutlined/>}>
+                            <Link to="/my/projects">Задачи</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/reminder" icon={<ProjectOutlined/>}>
-                            <Link to="/todo/reminder">Список проектов</Link>
+                        <Menu.Item key="/all/projects" icon={<ProjectOutlined/>}>
+                            <Link to="/all/projects">Список проектов</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/archive" icon={<MailOutlined/>}>
-                            <Link to="/todo/archive">Чат</Link>
+                        <Menu.Item key="/chats" icon={<MailOutlined/>}>
+                            <Link to="/chats">Чат</Link>
                         </Menu.Item>
                     </Menu>
                 </Sider>

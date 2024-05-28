@@ -237,7 +237,7 @@ const UserProfilePage = () => {
                         justifyContent: 'center',
                         marginTop: '150px'
                     }}>
-                        <Link to="/todo/note">
+                        <Link to="/my/projects">
                             <Button icon={<BackwardOutlined/>}
                                     style={{
                                         width: '120px',

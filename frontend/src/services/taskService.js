@@ -28,7 +28,6 @@ const getAllTasks = (dispatch) => {
                 console.error(_content);
 
                 dispatch(set([]));
-                dispatch(setAllProjects([]));
             }
         );
 };
@@ -196,7 +195,6 @@ const updateTaskStatus = (taskId, statusId, dispatch) => {
     return axios.put(`${API_URL}/${taskId}/status/${statusId}`, null, {headers: authHeader()}).then(
         (response) => {
             console.log("Статус задачи обновлен успешно");
-            getAllTasks(dispatch);
             return response.data;
         },
         (error) => {
@@ -245,6 +243,29 @@ const updateCurrentComplexity = (taskId, currentComplexity) => {
     );
 };
 
+const addCommentToTask = (taskId, userId, content, file) => {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("content", content);
+    formData.append("file", file);
+
+    return axios.post(`${API_URL}/${taskId}/comments`, formData, {
+        headers: {
+            ...authHeader(),
+            "Content-Type": "multipart/form-data"
+        }
+    }).then(
+        (response) => {
+            console.log("Комментарий успешно добавлен к задаче");
+            return response.data;
+        },
+        (error) => {
+            console.error("Ошибка при добавлении комментария к задаче", error);
+            return null;
+        }
+    );
+};
+
 const taskService = {
     getAllTasks,
     getTasksFromProjects,
@@ -259,7 +280,8 @@ const taskService = {
     getTaskById,
     assignUserToTask,
     updateTaskComplexity,
-    updateCurrentComplexity
+    updateCurrentComplexity,
+    addCommentToTask
 };
 
 export default taskService;
