@@ -31,19 +31,23 @@ public class User {
 
     @NotBlank
     @Size(max = 20)
+    @Column
     private String username;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 100)
+    @Column
     private String name;
 
     @NotBlank
     @Size(max = 50)
     @Email
+    @Column
     private String email;
 
     @NotBlank
     @Size(max = 120)
+    @Column
     private String password;
 
     @Column(name = "study_group")
@@ -57,8 +61,8 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments;
 
     @Lob
     @Column(name = "profile_picture")
@@ -72,6 +76,9 @@ public class User {
 
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
+
+    @Column
+    private boolean isBlocked;
 
     public User(String username, String name, String email, String password) {
         this.username = username;

@@ -38,12 +38,8 @@ public class Task {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-    @Column
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime deadline;
-
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+//    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")

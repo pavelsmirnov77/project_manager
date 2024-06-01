@@ -1,4 +1,0 @@
-###Задач по статусу
-GET localhost:8081/todo/tasks/status/1
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJQYXZlbCIsImlhdCI6MTcxMjg2MzUzOSwiZXhwIjoxNzEyOTQ5OTM5fQ.Sw921JMV6Ug9cWaRRRk-lZ1r77vhLHkc0_0c13rSnW4

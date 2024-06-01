@@ -199,5 +199,4 @@ public class TaskServiceImpl implements TaskService {
             throw new RuntimeException("Задача или пользователь не найдены");
         }
     }
-
 }

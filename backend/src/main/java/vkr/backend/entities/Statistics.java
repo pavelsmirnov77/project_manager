@@ -24,8 +24,10 @@ public class Statistics {
     private Project project;
 
     @Column(name = "completed_tasks")
-    private int completedTasks;
+    private Integer completedTasks;
+
+    private Integer allTasks;
 
     @Column(name = "hours_spent")
-    private int hoursSpent;
+    private Long hoursSpent;
 }
