@@ -1,13 +1,17 @@
-import React, {useState} from 'react';
-import {Layout, Menu, Input, Button, Avatar, Tooltip} from 'antd';
+import React, { useState } from 'react';
+import { Layout, Menu, Button, Avatar, Tooltip } from 'antd';
 import {
     MenuOutlined,
     UserOutlined,
-    BulbOutlined, MailOutlined, ProjectOutlined,
+    BulbOutlined,
+    MailOutlined,
+    ProjectOutlined,
+    StockOutlined,
+    LineChartOutlined,
 } from '@ant-design/icons';
-import {Link, useLocation} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const {Header, Content, Sider} = Layout;
+const { Header, Content, Sider } = Layout;
 
 const MenuBar = () => {
     const [collapsed, setCollapsed] = useState(true);
@@ -24,6 +28,10 @@ const MenuBar = () => {
         }
     };
 
+    const hasRole = (role) => {
+        return user?.roles?.includes(role);
+    };
+
     return (
         <Layout>
             <Header
@@ -38,16 +46,16 @@ const MenuBar = () => {
                     zIndex: 1,
                 }}
             >
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Button
                         type="text"
-                        style={{color: '#fff', marginRight: '16px'}}
+                        style={{ color: '#fff', marginRight: '16px' }}
                         onClick={toggleSidebar}
-                        icon={<MenuOutlined/>}
+                        icon={<MenuOutlined />}
                     />
-                    <h1 style={{color: '#fff', margin: 0}}>PROJECT MANAGER</h1>
+                    <h1 style={{ color: '#fff', margin: 0 }}>PROJECT MANAGER</h1>
                 </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Link to="/users">
                         <Tooltip title="Профиль пользователя" placement="bottom">
                             <span style={{
@@ -59,12 +67,12 @@ const MenuBar = () => {
                             }}>
                                 {user.username}
                             </span>
-                            <Avatar icon={<UserOutlined/>}/>
+                            <Avatar icon={<UserOutlined />} />
                         </Tooltip>
                     </Link>
                 </div>
             </Header>
-            <Layout style={{marginTop: '64px'}}>
+            <Layout style={{ marginTop: '64px' }}>
                 <Sider
                     theme="dark"
                     trigger={null}
@@ -82,21 +90,34 @@ const MenuBar = () => {
                     }}
                 >
                     <Menu
-                        style={{background: '#333232', zIndex: 1}}
+                        style={{ background: '#333232', zIndex: 1 }}
                         theme="dark"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         onClick={handleMenuClick}
                     >
-                        <Menu.Item key="/my/projects" icon={<BulbOutlined/>}>
+                        <Menu.Item key="/my/projects" icon={<BulbOutlined />}>
                             <Link to="/my/projects">Задачи</Link>
                         </Menu.Item>
-                        <Menu.Item key="/all/projects" icon={<ProjectOutlined/>}>
+                        <Menu.Item key="/all/projects" icon={<ProjectOutlined />}>
                             <Link to="/all/projects">Список проектов</Link>
                         </Menu.Item>
-                        <Menu.Item key="/chats" icon={<MailOutlined/>}>
+                        <Menu.Item key="/chats" icon={<MailOutlined />}>
                             <Link to="/chats">Чат</Link>
                         </Menu.Item>
+                        <Menu.Item key="/statistics" icon={<StockOutlined />}>
+                            <Link to="/statistics">Статистика</Link>
+                        </Menu.Item>
+                        {(hasRole('ROLE_PM') || hasRole('ROLE_ADMIN')) && (
+                            <Menu.Item key="/all-statistics" icon={<LineChartOutlined />}>
+                                <Link to="/all-statistics">Статистика всех пользователей</Link>
+                            </Menu.Item>
+                        )}
+                        {hasRole('ROLE_ADMIN') && (
+                            <Menu.Item key="/admin/users" icon={<UserOutlined />}>
+                                <Link to="/admin/users">Список пользователей</Link>
+                            </Menu.Item>
+                        )}
                     </Menu>
                 </Sider>
                 <Layout style={{

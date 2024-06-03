@@ -1,0 +1,19 @@
+### Отправка сообщения
+POST http://localhost:8081/api/messages/send?dialogId=1&senderId=1&recipientId=2&text=Привет
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Редактирование сообщения
+PUT http://localhost:8081/api/messages/edit/1?newText=Updated message text
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Удаление сообщения
+DELETE http://localhost:8081/api/messages/delete/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Получение сообщений по ID диалога
+GET http://localhost:8081/api/messages/dialog/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg

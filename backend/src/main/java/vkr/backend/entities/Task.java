@@ -38,8 +38,8 @@ public class Task {
     @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
-//    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id")

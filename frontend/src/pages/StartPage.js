@@ -2,11 +2,7 @@ import React from 'react';
 import {Button} from 'antd';
 import {
     UserOutlined,
-    ProfileOutlined,
     CheckOutlined,
-    BellOutlined,
-    SearchOutlined,
-    StarOutlined
 } from '@ant-design/icons';
 import '../css/startPageStyles.css';
 import {Link} from "react-router-dom";

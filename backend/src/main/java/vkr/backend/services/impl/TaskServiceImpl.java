@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vkr.backend.exceptions.NotFoundTask;
 import vkr.backend.services.ProjectService;
+import vkr.backend.services.StatisticsService;
 import vkr.backend.services.TaskService;
 import vkr.backend.entities.*;
 import vkr.backend.repositories.*;
@@ -25,25 +26,34 @@ public class TaskServiceImpl implements TaskService {
     private final StatusRepository statusRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final StatisticsService statisticsService;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository, ProjectService projectService, PriorityRepository priorityRepository, StatusRepository statusRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository,
+                           ProjectService projectService,
+                           PriorityRepository priorityRepository,
+                           StatusRepository statusRepository,
+                           UserRepository userRepository,
+                           CommentRepository commentRepository,
+                           StatisticsService statisticsService) {
         this.taskRepository = taskRepository;
         this.projectService = projectService;
         this.priorityRepository = priorityRepository;
         this.statusRepository = statusRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.statisticsService = statisticsService;
     }
 
     @Override
-    public long createTask(Task task, long categoryId) {
-        Optional<Project> optionalCategory = projectService.findProjectById(categoryId);
-        if (optionalCategory.isPresent()) {
-            Project project = optionalCategory.get();
+    @Transactional
+    public long createTask(Task task, long projectId) {
+        Optional<Project> optionalProject = projectService.findProjectById(projectId);
+        if (optionalProject.isPresent()) {
+            Project project = optionalProject.get();
             task.setProject(project);
         } else {
-            throw new RuntimeException("Категория не найдена");
+            throw new RuntimeException("Проект не найден");
         }
 
         Priority priority = priorityRepository.findById(1L).orElseThrow(() -> new RuntimeException("Приоритет не найден"));
@@ -123,6 +133,7 @@ public class TaskServiceImpl implements TaskService {
             if (optionalStatus.isPresent()) {
                 task.setStatus(optionalStatus.get());
                 taskRepository.save(task);
+                statisticsService.updateStatisticsOnTaskCompletion(taskId);
                 return true;
             } else {
                 log.error("Статус с id {} не найден", statusId);
@@ -144,6 +155,7 @@ public class TaskServiceImpl implements TaskService {
             User user = optionalUser.get();
             task.setAssignee(user);
             taskRepository.save(task);
+            statisticsService.updateStatisticsOnTaskAssignment(userId, taskId);
         } else {
             throw new RuntimeException("Задача или пользователь не найдены");
         }
@@ -170,6 +182,7 @@ public class TaskServiceImpl implements TaskService {
             Task task = optionalTask.get();
             task.setCurrentComplexity(currentComplexity);
             taskRepository.save(task);
+            statisticsService.updateStatisticsOnTaskCurrentComplexity(task.getAssignee().getId(), task.getProject().getId(), currentComplexity);
             return true;
         } else {
             log.error("Задача с id {} не найдена", taskId);
@@ -197,6 +210,17 @@ public class TaskServiceImpl implements TaskService {
             return commentRepository.save(comment);
         } else {
             throw new RuntimeException("Задача или пользователь не найдены");
+        }
+    }
+
+    @Override
+    public List<Comment> findCommentsByTaskId(Long taskId) {
+        Optional<Task> optionalTask = taskRepository.findById(taskId);
+        if (optionalTask.isPresent()) {
+            Task task = optionalTask.get();
+            return commentRepository.findCommentsByTask(task);
+        } else {
+            throw new RuntimeException("Задача не найдена");
         }
     }
 }

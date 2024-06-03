@@ -11,7 +11,7 @@ const {Title, Paragraph} = Typography;
 const {Option} = Select;
 const antIcon = <LoadingOutlined style={{fontSize: 24}} spin/>;
 
-const TaskDetails = () => {
+const TaskDetails = ({project}) => {
     const dispatch = useDispatch();
     const {taskId} = useParams();
     const [task, setTask] = useState(null);
@@ -28,6 +28,14 @@ const TaskDetails = () => {
     const [editedCurrentComplexity, setEditedCurrentComplexity] = useState("");
     const [comment, setComment] = useState("");
     const [fileList, setFileList] = useState([]);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user ? user.id : null;
+    const userRoles = user ? user.roles : [];
+
+    const canEditProjectTitle = () => {
+        return userRoles.includes("ROLE_PM") && currentUserId === project.userCreator.id;
+    };
 
     useEffect(() => {
         const fetchTask = async () => {
@@ -52,7 +60,7 @@ const TaskDetails = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const projectId = 2;
+                const projectId = 1;
                 if (projectId) {
                     console.log(projectId)
                     const users = await ProjectService.getUsersByProjectId(projectId);
@@ -260,12 +268,9 @@ const TaskDetails = () => {
                             ) : (
                                 <>
                                     {task.title}
-                                    <Button
-                                        type="text"
-                                        icon={<EditOutlined/>}
-                                        onClick={handleTitleEdit}
-                                        style={{marginLeft: "8px", color: "white"}}
-                                    />
+                                    {canEditProjectTitle() && (
+                                        <EditOutlined style={{ marginRight: "8px" }} onClick={handleTitleEdit} />
+                                    )}
                                 </>
                             )}
                         </Title>

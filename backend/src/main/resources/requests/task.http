@@ -22,24 +22,22 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3M
 ### Получение задачи по id
 GET http://localhost:8081/todo/tasks/1
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Получение всех задач
 GET http://localhost:8081/todo/tasks
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Получение всех задач проекта
 GET http://localhost:8081/todo/tasks/project/1
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Обновление задачи
 PUT http://localhost:8081/todo/tasks
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 {
   "id": 1,
@@ -61,45 +59,39 @@ Content-Type: application/json
 ### Получение списка статусов задачи
 GET http://localhost:8081/todo/tasks/statuses
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Получение списка приоритетов задачи
 GET http://localhost:8081/todo/tasks/priorities
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Получение задач по статусу
 GET http://localhost:8081/todo/tasks/status/1
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Обновление статуса задачи
 PUT http://localhost:8081/todo/tasks/1/status/2
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Обновление исполнителя задачи
-PUT http://localhost:8081/todo/tasks/1/assign/2
+PUT http://localhost:8081/todo/tasks/1/assign/1
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Обновление трудозатрат задачи
 PUT http://localhost:8081/todo/tasks/1/complexity?complexity=10
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Обновление текущих трудозатрат задачи
 PUT http://localhost:8081/todo/tasks/1/currentComplexity?currentComplexity=5
 Content-Type: application/json
-
-###
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
 
 ### Добавление комментария к задаче
 POST http://localhost:8081/todo/tasks/1/comments
 Content-Type: multipart/form-data
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw

@@ -25,6 +25,9 @@ const login = (login) => {
             if (response.data.accessToken) {
                 localStorage.setItem("user", JSON.stringify(response.data));
             }
+            if (response.data.blocked) {
+                throw new Error('account_blocked');
+            }
             return response.data;
         });
 };

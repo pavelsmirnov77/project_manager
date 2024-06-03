@@ -93,8 +93,8 @@ const TaskCard = ({task, handleArchiveTask, selectedTask, dispatch}) => {
         const statusLabels = {
             ANALYSIS: 'Анализ',
             REQUIREMENTS: 'В требованиях',
-            DEVELOPMENT: 'В разработке',
-            TESTING: 'На тестировании',
+            DEVELOPMENT: 'Разработка',
+            TESTING: 'Тестирование',
             INSTALLATION: 'Установлено'
         };
         return statusLabels[status] || 'Неизвестный статус';

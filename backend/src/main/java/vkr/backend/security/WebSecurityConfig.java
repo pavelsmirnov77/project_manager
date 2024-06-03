@@ -1,5 +1,6 @@
 package vkr.backend.security;
 
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import vkr.backend.security.jwt.AuthEntryPointJwt;
 import vkr.backend.security.jwt.AuthTokenFilter;
 import vkr.backend.security.services.UserDetailsServiceImpl;
@@ -31,12 +32,11 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, AuthTokenFilter authTokenFilter,
                                            AuthEntryPointJwt unauthorizedHandler,
                                            UserDetailsServiceImpl userDetailsService) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 

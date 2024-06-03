@@ -40,6 +40,13 @@ export const ProjectCard = ({project}) => {
         "INSTALLATION": []
     });
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const currentUserId = user ? user.id : null;
+    const userRoles = user ? user.roles : [];
+    const canEditProjectTitle = () => {
+        return userRoles.includes("ROLE_PM") && currentUserId === project.userCreator.id;
+    };
+
     useEffect(() => {
         const filtered = tasks.filter((task) =>
             task.title.toLowerCase().includes(searchValue.toLowerCase())
@@ -206,7 +213,9 @@ export const ProjectCard = ({project}) => {
             key={project.id}
             title={
                 <div style={{display: "flex", alignItems: "center", color: "white"}}>
-                    <EditOutlined style={{marginRight: "8px"}} onClick={handleEditClick}/>
+                    {canEditProjectTitle() && (
+                        <EditOutlined style={{marginRight: "8px"}} onClick={handleEditClick}/>
+                    )}
                     Проект:{" "}
                     {isEditing ? (
                         <Input
@@ -239,14 +248,16 @@ export const ProjectCard = ({project}) => {
                         {<BgColorsOutlined/>}
                     </Button>
                 </Dropdown>
-                <Popconfirm
-                    title="Вы уверены, что хотите удалить этот проект?"
-                    okText="Да"
-                    cancelText="Отмена"
-                    onConfirm={() => handleDeleteProject(project.id)}
-                >
-                    <Button type="primary" danger icon={<DeleteOutlined/>}/>
-                </Popconfirm>
+                {canEditProjectTitle() && (
+                    <Popconfirm
+                        title="Вы уверены, что хотите удалить этот проект?"
+                        okText="Да"
+                        cancelText="Отмена"
+                        onConfirm={() => handleDeleteProject(project.id)}
+                    >
+                        <Button type="primary" danger icon={<DeleteOutlined/>}/>
+                    </Popconfirm>
+                )}
                 <Button
                     type="primary"
                     icon={<SortAscendingOutlined/>}

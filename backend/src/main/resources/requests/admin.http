@@ -1,0 +1,13 @@
+### Удаление пользователя
+DELETE http://localhost:8081/admin/users/1
+Content-Type: application/json
+
+### Блокировка пользователя
+PUT http://localhost:8081/admin/users/1/block
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Разблокировка пользователя
+PUT http://localhost:8081/admin/users/1/unblock
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg

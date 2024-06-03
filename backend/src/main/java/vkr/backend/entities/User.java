@@ -61,21 +61,24 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     @Lob
     @Column(name = "profile_picture")
     private byte[] profilePicture;
 
-    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-    private List<Dialog> sender;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dialog> sentMessages;
 
-    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
-    private List<Dialog> recipient;
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dialog> receivedMessages;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Project> projects;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Statistics> statistics;
+
+    @ManyToMany(mappedBy = "users", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Set<Project> projects = new HashSet<>();
 
     @Column
     private boolean isBlocked;

@@ -15,7 +15,7 @@ public class Statistics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -30,4 +30,12 @@ public class Statistics {
 
     @Column(name = "hours_spent")
     private Long hoursSpent;
+
+    public Statistics(User user, Project project, Integer completedTasks, Integer allTasks, Long hoursSpent) {
+        this.user = user;
+        this.project = project;
+        this.completedTasks = completedTasks;
+        this.allTasks = allTasks;
+        this.hoursSpent = hoursSpent;
+    }
 }

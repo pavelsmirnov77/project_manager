@@ -8,6 +8,12 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    List<Task> findTasksByStatusId(Long statusIds);
+    /**
+     * Ищет задачу по id статуса
+     *
+     * @param statusId уникальный идентификатор статуса
+     * @return список задач
+     */
+    List<Task> findTasksByStatusId(Long statusId);
 
 }

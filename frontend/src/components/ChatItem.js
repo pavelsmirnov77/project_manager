@@ -11,13 +11,13 @@ const ChatItem = () => {
     const [editModalVisible, setEditModalVisible] = useState(false);
 
     const user = JSON.parse(localStorage.getItem("user"));
-    const dialogId = 1;
+    const dialogId = 3;
 
     useEffect(() => {
         MessageService.getMessagesByDialogId(dialogId).then(data => {
             setMessages(data);
         }).catch(error => {
-            console.error("Error fetching messages:", error);
+            console.error("Ошибка получения сообщения:", error);
         });
     }, [dialogId]);
 
@@ -98,10 +98,10 @@ const ChatItem = () => {
                             <List.Item>
                                 <div className="message-card">
                                     <List.Item.Meta
-                                        avatar={<Avatar>{item.sender.username[0]}</Avatar>}
+                                        avatar={<Avatar>{item.sender.name[0]}</Avatar>}
                                         title={
                                             <div className="message-header">
-                                                <span className="sender-name" style={{ marginRight: '360px' }}>{item.sender.username}</span>
+                                                <span className="sender-name" style={{ marginRight: '300px' }}>{item.sender.name}</span>
                                                 <Dropdown overlay={menu(index)} trigger={['hover']}>
                                                     <Button
                                                         type="text"

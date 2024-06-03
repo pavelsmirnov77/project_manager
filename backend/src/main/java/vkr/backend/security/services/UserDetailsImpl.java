@@ -32,6 +32,8 @@ public class UserDetailsImpl implements UserDetails {
 
     private String studyGroup;
 
+    private boolean isBlocked;
+
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
@@ -45,6 +47,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getPassword(),
                 user.getName(),
                 user.getStudyGroup(),
+                user.isBlocked(),
                 authorities);
     }
 
@@ -77,6 +80,10 @@ public class UserDetailsImpl implements UserDetails {
 
     public String getStudyGroup() {
         return studyGroup;
+    }
+
+    public boolean getIsBlocked() {
+        return isBlocked;
     }
 
     @Override

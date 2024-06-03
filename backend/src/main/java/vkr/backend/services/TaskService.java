@@ -109,4 +109,12 @@ public interface TaskService {
      * @return комментарий
      */
     Comment addCommentToTask(Long taskId, Long userId, String content, byte[] fileContent);
+
+    /**
+     * Получает список комментариев определенной задачи
+     *
+     * @param taskId id задачи
+     * @return список комментариев
+     */
+    List<Comment> findCommentsByTaskId(Long taskId);
 }

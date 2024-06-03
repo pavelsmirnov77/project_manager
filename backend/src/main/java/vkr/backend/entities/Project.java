@@ -27,7 +27,7 @@ public class Project {
     @JoinColumn(name = "user_creator", nullable = false)
     User userCreator;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "project_users",
             joinColumns = @JoinColumn(name = "project_id"),

@@ -225,4 +225,20 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при добавлении комментария к задаче: " + e.getMessage());
         }
     }
+
+    /**
+     * Получает список комментариев по id задачи
+     *
+     * @param taskId id задачи
+     * @return список задач
+     */
+    @GetMapping("/{taskId}/comments")
+    public ResponseEntity<List<Comment>> getCommentsByTaskId(@PathVariable Long taskId) {
+        try {
+            List<Comment> comments = taskService.findCommentsByTaskId(taskId);
+            return new ResponseEntity<>(comments, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

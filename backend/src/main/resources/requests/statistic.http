@@ -1,0 +1,9 @@
+### Получение статистики по ID пользователя
+GET http://localhost:8081/api/statistics/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Получение всей статистики
+GET http://localhost:8081/api/statistics
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg

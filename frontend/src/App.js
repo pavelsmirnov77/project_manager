@@ -12,6 +12,9 @@ import TrashPage from "./pages/TrashPage";
 import UserPage from "./pages/UserPage";
 import TaskDetails from "./pages/TaskDetailsPage";
 import ChatPage from "./pages/ChatPage";
+import UserStatisticsPage from "./pages/UserStatisticsPage";
+import AllUsersStatisticsPage from "./pages/AllUsersStatisticsPage";
+import AdminUserManagementPage from "./pages/AdminUserManagementPage";
 
 const App = () => {
 
@@ -27,6 +30,9 @@ const App = () => {
             <Route path="/all/projects" element={<ProjectsListPage/>}/>
             <Route path="/users" element={<UserPage/>}/>
             <Route path="/tasks/:taskId" element={<TaskDetails/>}/>
+            <Route path="/statistics" element={<UserStatisticsPage/>}/>
+            <Route path="/all-statistics" element={<AllUsersStatisticsPage/>}/>
+            <Route path="/admin/users" element={<AdminUserManagementPage/>}/>
             <Route path="/chat/*" element={<ChatPage/>}/>
         </Routes>
     );

@@ -2,12 +2,10 @@ import axios from "axios";
 import {
     set,
     setPriorities,
-    setRegularities,
     setSelectedTask,
     setStatuses,
 } from "../slices/taskSlice";
 import authHeader from "./authHeader";
-import {setAllProjects} from "../slices/projectSlice";
 
 const API_URL = "/todo/tasks";
 
@@ -178,7 +176,7 @@ const deleteTask = (taskId, project_id, dispatch) => {
 
     return axios.delete(url, {headers: authHeader()}).then(
         () => {
-            return getAllTasks(dispatch);
+            return getTasksFromProjects(project_id, dispatch);
         },
         (error) => {
             const _content =
@@ -266,6 +264,21 @@ const addCommentToTask = (taskId, userId, content, file) => {
     );
 };
 
+const getCommentsByTaskId = (taskId) => {
+    return axios.get(`${API_URL}/${taskId}/comments`, {
+        headers: authHeader()
+    }).then(
+        (response) => {
+            console.log("Комментарии успешно получены для задачи", taskId);
+            return response.data;
+        },
+        (error) => {
+            console.error("Ошибка при получении комментариев для задачи", taskId, error);
+            return [];
+        }
+    );
+};
+
 const taskService = {
     getAllTasks,
     getTasksFromProjects,
@@ -281,7 +294,8 @@ const taskService = {
     assignUserToTask,
     updateTaskComplexity,
     updateCurrentComplexity,
-    addCommentToTask
+    addCommentToTask,
+    getCommentsByTaskId
 };
 
 export default taskService;
