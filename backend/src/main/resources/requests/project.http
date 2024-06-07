@@ -1,0 +1,52 @@
+### Создание проекта
+POST http://localhost:8081/todo/note
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+{
+  "name": "Проект 'Создание умного дома'",
+  "userCreator": {
+    "id": 1
+  },
+  "tasks": [],
+  "users": []
+}
+
+### Добавление пользователя в проект
+POST http://localhost:8081/todo/note/1/users/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+### Удаление пользователя из проекта
+DELETE http://localhost:8081/todo/note/1/users/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+### Получение списка всех участников проекта
+GET http://localhost:8081/todo/note/1/users
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+### Получение списка всех проектов для пользователя
+GET http://localhost:8081/todo/note/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+### Получение списка всех проектов
+GET http://localhost:8081/todo/note
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+### Изменение информации о проекте
+PUT http://localhost:8081/todo/note/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw
+
+{
+  "name": "Новое название проекта"
+}
+
+### Удаление проекта
+DELETE http://localhost:8081/todo/note/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbWlybm92cGEiLCJpYXQiOjE3MTcyNjAyNTAsImV4cCI6MTcxNzM0NjY1MH0.r6rNNZjssTmMwTP3ltYJj5gBNgrLEGnTBGeK5RdhVRw

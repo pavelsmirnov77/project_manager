@@ -32,7 +32,7 @@
   align-items: center;
   padding: 40px;
   animation: fadeIn 2s ease-out;
-  z-index: 2;
+  z-index: 10;
 }
 
 .header-text p {

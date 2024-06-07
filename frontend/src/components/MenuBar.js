@@ -1,16 +1,17 @@
-import React, {useState} from 'react';
-import {Layout, Menu, Input, Button, Avatar, Tooltip} from 'antd';
+import React, { useState } from 'react';
+import { Layout, Menu, Button, Avatar, Tooltip } from 'antd';
 import {
     MenuOutlined,
     UserOutlined,
-    FileOutlined,
-    DeleteOutlined,
-    NotificationOutlined,
     BulbOutlined,
+    MailOutlined,
+    ProjectOutlined,
+    StockOutlined,
+    LineChartOutlined,
 } from '@ant-design/icons';
-import {Link, useLocation} from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-const {Header, Content, Sider} = Layout;
+const { Header, Content, Sider } = Layout;
 
 const MenuBar = () => {
     const [collapsed, setCollapsed] = useState(true);
@@ -27,8 +28,12 @@ const MenuBar = () => {
         }
     };
 
+    const hasRole = (role) => {
+        return user?.roles?.includes(role);
+    };
+
     return (
-        <Layout style={{minHeight: '100vh'}}>
+        <Layout>
             <Header
                 style={{
                     background: '#333232',
@@ -41,17 +46,17 @@ const MenuBar = () => {
                     zIndex: 1,
                 }}
             >
-                <div style={{display: 'flex', alignItems: 'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <Button
                         type="text"
-                        style={{color: '#fff', marginRight: '16px'}}
+                        style={{ color: '#fff', marginRight: '16px' }}
                         onClick={toggleSidebar}
-                        icon={<MenuOutlined/>}
+                        icon={<MenuOutlined />}
                     />
-                    <h1 style={{color: '#fff', margin: 0}}>TODO-List</h1>
+                    <h1 style={{ color: '#fff', margin: 0 }}>PROJECT MANAGER</h1>
                 </div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <Link to="/users/profile">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Link to="/users">
                         <Tooltip title="Профиль пользователя" placement="bottom">
                             <span style={{
                                 marginLeft: '15px',
@@ -62,12 +67,12 @@ const MenuBar = () => {
                             }}>
                                 {user.username}
                             </span>
-                            <Avatar icon={<UserOutlined/>}/>
+                            <Avatar icon={<UserOutlined />} />
                         </Tooltip>
                     </Link>
                 </div>
             </Header>
-            <Layout style={{marginTop: '64px'}}>
+            <Layout style={{ marginTop: '64px' }}>
                 <Sider
                     theme="dark"
                     trigger={null}
@@ -81,34 +86,47 @@ const MenuBar = () => {
                         position: 'fixed',
                         left: 0,
                         background: '#333232',
+                        zIndex: 2000,
                     }}
                 >
                     <Menu
-                        style={{background: '#333232'}}
+                        style={{ background: '#333232', zIndex: 1 }}
                         theme="dark"
                         mode="inline"
                         selectedKeys={[location.pathname]}
                         onClick={handleMenuClick}
                     >
-                        <Menu.Item key="/todo/note" icon={<BulbOutlined/>}>
-                            <Link to="/todo/note">Заметки</Link>
+                        <Menu.Item key="/my/projects" icon={<BulbOutlined />}>
+                            <Link to="/my/projects">Задачи</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/reminder" icon={<NotificationOutlined/>}>
-                            <Link to="/todo/reminder">Напоминания</Link>
+                        <Menu.Item key="/all/projects" icon={<ProjectOutlined />}>
+                            <Link to="/all/projects">Список проектов</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/archive" icon={<FileOutlined/>}>
-                            <Link to="/todo/archive">Архив</Link>
+                        <Menu.Item key="/chats" icon={<MailOutlined />}>
+                            <Link to="/chats">Чат</Link>
                         </Menu.Item>
-                        <Menu.Item key="/todo/trash" icon={<DeleteOutlined/>}>
-                            <Link to="/todo/trash">Корзина</Link>
+                        <Menu.Item key="/statistics" icon={<StockOutlined />}>
+                            <Link to="/statistics">Статистика</Link>
                         </Menu.Item>
+                        {(hasRole('ROLE_PM') || hasRole('ROLE_ADMIN')) && (
+                            <Menu.Item key="/all-statistics" icon={<LineChartOutlined />}>
+                                <Link to="/all-statistics">Статистика всех пользователей</Link>
+                            </Menu.Item>
+                        )}
+                        {hasRole('ROLE_ADMIN') && (
+                            <Menu.Item key="/admin/users" icon={<UserOutlined />}>
+                                <Link to="/admin/users">Список пользователей</Link>
+                            </Menu.Item>
+                        )}
                     </Menu>
                 </Sider>
                 <Layout style={{
                     marginLeft: collapsed ? 80 : 200,
-                    padding: '0 24px 24px'
+                    padding: '0 24px 24px',
+                    background: '#ffffff'
                 }}>
                     <Content style={{
+                        zIndex: 4,
                         margin: '24px 0',
                         padding: 24,
                         height: '100%'

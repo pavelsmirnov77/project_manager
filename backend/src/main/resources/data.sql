@@ -1,23 +1,24 @@
-insert into todo_smirnov_pa.roles (name)
+insert into project_manager.roles (name)
 values ('ROLE_USER');
+insert into project_manager.roles (name)
+values ('ROLE_PM');
+insert into project_manager.roles (name)
+values ('ROLE_ADMIN');
 
-insert into todo_smirnov_pa.statuses (name)
-values ('IN_PROGRESS');
-insert into todo_smirnov_pa.statuses (name)
-values ('COMPLETE');
+insert into project_manager.statuses (name)
+values ('ANALYSIS');
+insert into project_manager.statuses (name)
+values ('REQUIREMENTS');
+insert into project_manager.statuses (name)
+values ('DEVELOPMENT');
+insert into project_manager.statuses (name)
+values ('TESTING');
+insert into project_manager.statuses (name)
+values ('INSTALLATION');
 
-insert into todo_smirnov_pa.regularities (name)
-values ('IRREGULAR');
-insert into todo_smirnov_pa.regularities (name)
-values ('DAILY');
-insert into todo_smirnov_pa.regularities (name)
-values ('WEEKLY');
-insert into todo_smirnov_pa.regularities (name)
-values ('MONTHLY');
-
-insert into todo_smirnov_pa.priorities (name)
+insert into project_manager.priorities (name)
 values ('LOW');
-insert into todo_smirnov_pa.priorities (name)
+insert into project_manager.priorities (name)
 values ('MEDIUM');
-insert into todo_smirnov_pa.priorities (name)
+insert into project_manager.priorities (name)
 values ('HIGH');

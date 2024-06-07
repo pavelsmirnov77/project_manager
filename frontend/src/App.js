@@ -6,30 +6,34 @@ import {NotFoundPage} from "./pages/NotFoundPage";
 import RegisterPage from "./pages/RegisterPage";
 import AuthPage from "./pages/AuthPage";
 import {TodoListsPage} from "./pages/TodoListsPage";
-import {ArchivePage} from "./pages/ArchivePage";
-import ReminderPage from "./pages/ReminderPage";
+import {ChatsPage} from "./pages/ChatsPage";
+import ProjectsListPage from "./pages/ProjectsListPage";
 import TrashPage from "./pages/TrashPage";
-import authService from "./services/authService";
 import UserPage from "./pages/UserPage";
+import TaskDetails from "./pages/TaskDetailsPage";
+import ChatPage from "./pages/ChatPage";
+import UserStatisticsPage from "./pages/UserStatisticsPage";
+import AllUsersStatisticsPage from "./pages/AllUsersStatisticsPage";
+import AdminUserManagementPage from "./pages/AdminUserManagementPage";
 
 const App = () => {
-
-    const handleSignUp = (userData) => {
-        authService.register(userData);
-    };
 
     return (
         <Routes>
             <Route path="/" element={<StartPage/>}/>
             <Route path="/api/auth" element={<AuthOrRegisterPage/>}/>
             <Route path="*" element={<NotFoundPage/>}/>
-            <Route path="/api/auth/signup" element={<RegisterPage handleSignUp={handleSignUp}/>}/>
+            <Route path="/api/auth/signup" element={<RegisterPage/>}/>
             <Route path="/api/auth/signin" element={<AuthPage/>}/>
-            <Route path="/todo/note" element={<TodoListsPage/>}/>
-            <Route path="/todo/archive" element={<ArchivePage/>}/>
-            <Route path="/todo/reminder" element={<ReminderPage/>}/>
-            <Route path="/todo/trash" element={<TrashPage/>}/>
-            <Route path="/users/profile" element={<UserPage/>}/>
+            <Route path="/my/projects" element={<TodoListsPage/>}/>
+            <Route path="/chats" element={<ChatsPage/>}/>
+            <Route path="/all/projects" element={<ProjectsListPage/>}/>
+            <Route path="/users" element={<UserPage/>}/>
+            <Route path="/tasks/:taskId" element={<TaskDetails/>}/>
+            <Route path="/statistics" element={<UserStatisticsPage/>}/>
+            <Route path="/all-statistics" element={<AllUsersStatisticsPage/>}/>
+            <Route path="/admin/users" element={<AdminUserManagementPage/>}/>
+            <Route path="/chat/*" element={<ChatPage/>}/>
         </Routes>
     );
 };

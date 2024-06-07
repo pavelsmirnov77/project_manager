@@ -22,9 +22,6 @@ export const taskSlice = createSlice({
         setPriorities: (state, action) => {
             state.priorities = action.payload;
         },
-        setRegularities: (state, action) => {
-            state.regularities = action.payload;
-        },
     },
 })
 
@@ -32,8 +29,7 @@ export const {
     set,
     setSelectedTask,
     setStatuses,
-    setPriorities,
-    setRegularities
+    setPriorities
 } = taskSlice.actions;
 
 export default taskSlice.reducer;

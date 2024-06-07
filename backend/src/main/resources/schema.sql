@@ -1,1 +1,1 @@
-create schema if not exists todo_smirnov_pa;
+create schema if not exists project_manager;

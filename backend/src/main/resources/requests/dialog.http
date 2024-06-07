@@ -1,0 +1,19 @@
+### Поиск диалога по senderId и recipientId
+GET http://localhost:8081/api/dialogs/find?senderId=1&recipientId=2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Создание нового диалога
+POST http://localhost:8081/api/dialogs/create?senderId=1&recipientId=2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Удаление диалога по id
+DELETE http://localhost:8081/api/dialogs/delete/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
+
+### Получение всех диалогов по userId
+GET http://localhost:8081/api/dialogs/user/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbnBhIiwiaWF0IjoxNzE3MjY1NjE5LCJleHAiOjE3MTczNTIwMTl9.enFq9myiFL6SvqG7yIqmHg7j6ZjFY0ge5vKu7364Mlg
